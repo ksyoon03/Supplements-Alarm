@@ -16,9 +16,9 @@ public class Main extends Application {
     // 파일 불러오기 중 오류 발생 시 상위 호출자에게 처리 위임
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com/coin_investment/view/login-view.fxml"));
         // login-view.fxml 파일 불러오기
-        Scene scene = new Scene(fxmlLoader.load(), 400, 300);
-        // 불러온 파일로부터 로드란 UI 요소들을 담는 객체 생성, 가로 400px, 세로, 300px
-        stage.setTitle("모의 코인 투자 프로그램"); // 프로그램 제목
+        Scene scene = new Scene(fxmlLoader.load(), 450, 350);
+        // 불러온 파일로부터 로드한 UI 요소들을 담는 객체 생성, 가로 450px, 세로 350px
+        stage.setTitle("코인모투"); // 프로그램 제목
         stage.setScene(scene); // 로그인 화면 구성
         stage.show();   // 로그인 화면 출력
     }

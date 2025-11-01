@@ -37,7 +37,7 @@
     </padding>
 
     <!--화면에 로그인 텍스트를 표시하는 라벨-->
-    <Label text="1조 모의 코인투자 프로그램">
+    <Label text="코인모투">
         <!--폰트 설정-->
         <font>
             <Font name="Malgun Gothic Bold"
