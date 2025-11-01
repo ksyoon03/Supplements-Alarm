@@ -100,6 +100,9 @@ public class SignupController {
                             usernameField.clear();
                             passwordField.clear();
                             confirmField.clear();
+
+                            // 로그인 화면으로 이동
+                            navigateToLogin();
                         });
                     } else if (status == 409) { // 아이디 중복
                         Platform.runLater(() ->
@@ -117,6 +120,23 @@ public class SignupController {
                 });
     }
 
+    // ++ 로그인 화면으로 이동
+    private void navigateToLogin() {
+        // login-view.fxml 파일 불러오기
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/com/coin_investment/view/login-view.fxml"));
+
+            // 현재 Stage 창 객체 가져오기
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("로그인");
+            stage.show(); // 새 화면 표시
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "화면 전환 오류", "로그인 화면으로 이동할 수 없습니다.");
+        }
+    }
 
     // 전송 중 버튼 비활성화
     private void setBusy(boolean busy) {
