@@ -1,3 +1,5 @@
+package com.nutrient_reminder;
+
 import java.util.*;
 
 public class SupplementRecommenderModel {

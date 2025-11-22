@@ -3,6 +3,7 @@ package com.nutrient_reminder.controller;
 // JavaFX 활용을 위한 요소들
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -38,6 +39,12 @@ public class LoginController {
         String username = idField.getText();
         String password = passwordField.getText();
 
+        // 입력값 검증
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "입력 확인", "아이디와 비밀번호를 모두 입력해주세요.");
+            return;
+        }
+
         // HttpClient 클래스 객체 생성
         HttpClient client = HttpClient.newHttpClient();
 
@@ -70,19 +77,44 @@ public class LoginController {
             // 서버의 응답 코드 확인
             if(response.statusCode() == 200){   // 200 = 성공을 의미, 401 = 인증 실패, 500 = 서버 오류
                 System.out.println("로그인 성공");
+
+                // 영양제 추천 페이지로 이동
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/nutrient-check.fxml"));
+                Parent root = loader.load();
+
+                NutrientCheckController controller = loader.getController();
+                controller.setUsername(username);
+
+                Stage stage = (Stage) idField.getScene().getWindow();
+                stage.setScene(new Scene(root, 750, 600));
             }
             else{
                 System.out.println("로그인 실패" + response.body());
+                showAlert(Alert.AlertType.ERROR, "로그인 실패", "아이디 또는 비밀번호가 올바르지 않습니다.");
             }
         }
-        catch(Exception e) {    // 예외 발생 시
-            e.printStackTrace();    // 오류 발생 경로 출력
-            System.out.println("서버 연결 오류");
+        catch(IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "서버 연결 오류", "서버에 연결할 수 없습니다.\n서버가 실행 중인지 확인해주세요.");
         }
+        catch(InterruptedException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "요청 오류", "요청이 중단되었습니다.");
+        }
+
 
         System.out.println("로그인 진행");
         System.out.println("아이디: " + username);
         System.out.println("비밀번호: " + password);
+    }
+
+    // 알림창 표시 메서드 추가
+    private void showAlert(Alert.AlertType type, String header, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle("알림");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     //++ 회원가입 하이퍼링크 추가

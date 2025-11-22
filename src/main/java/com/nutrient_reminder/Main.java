@@ -15,10 +15,11 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
     // 파일 불러오기 중 오류 발생 시 상위 호출자에게 처리 위임
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com/nutrient_reminder/view/login-view.fxml"));
+
         // login-view.fxml 파일 불러오기
-        Scene scene = new Scene(fxmlLoader.load(), 450, 350);
+        Scene scene = new Scene(fxmlLoader.load(), 750, 600);
         // 불러온 파일로부터 로드한 UI 요소들을 담는 객체 생성, 가로 450px, 세로 350px
-        stage.setTitle("동의버스"); // 프로그램 제목
+        stage.setTitle("영양제 알리미"); // 프로그램 제목
         stage.setScene(scene); // 로그인 화면 구성
         stage.show();   // 로그인 화면 출력
     }
