@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+
+<!--UI 요소 세로 정렬-->
+<VBox alignment="CENTER"
+      spacing="16.0"
+      xmlns="http://javafx.com/javafx/17.0.6"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.nutrient_reminder.controller.SignupController"
+      prefWidth="420" prefHeight="420">
+
+    <!--UI 요소의 내부 여백 설정-->
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+
+    <!--화면 상단 제목 라벨-->
+    <Label text="회원가입">
+        <font>
+            <Font name="Malgun Gothic Bold" size="22"/>
+        </font>
+    </Label>
+
+
+    <!--아이디 / 비밀번호 / 비밀번호 확인 -->
+    <TextField fx:id="usernameField"
+               promptText="아이디 (영문/숫자 4~20자)"
+               maxWidth="260"/>
+
+    <PasswordField fx:id="passwordField"
+                   promptText="비밀번호 (8~32자)"
+                   maxWidth="260"/>
+
+    <PasswordField fx:id="confirmField"
+                   promptText="비밀번호 확인"
+                   maxWidth="260"/>
+
+
+    <!--비밀번호 표시 옵션-->
+    <!-- 보류
+    <HBox spacing="10" alignment="CENTER">
+        <CheckBox fx:id="showPasswordCheck" text="비밀번호 표시"/>
+    </HBox>-->
+
+    <!--회원가입 버튼-->
+    <Button fx:id="signupButton"
+            text="회원가입"
+            onAction="#signupAction"
+            defaultButton="true"
+            prefWidth="260"/>
+    <!--Button(회원가입 버튼) / text="회원가입"(버튼 텍스트) / onAction="#signupAction"(클릭 시 회원가입 처리)-->
+
+
+    <!--입력 안내 문구-->
+    <Label fx:id="hintLabel"
+           textFill="#A9A9A9"
+           wrapText="true"
+           maxWidth="300"
+           alignment="CENTER"
+           textAlignment="CENTER"
+           style="-fx-font-size: 12px;"
+           text="아이디는 영문/숫자 4~20자, 비밀번호는 8~32자를 권장해요."/>
+    <!--Label(입력 안내 문구) / textFill="#A9A9A9"(글자색 회색) / 중앙 정렬 / 글자 크기 12px-->
+
+</VBox>
