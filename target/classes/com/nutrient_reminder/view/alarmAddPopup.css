@@ -1,0 +1,20 @@
+/* 요일 버튼 기본 상태 */
+.day-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;  /* 1. 글자색을 진한 회색으로 변경 (잘 보이게) */
+    -fx-font-size: 15px;     /* 글자 크기 살짝 키움 */
+    -fx-cursor: hand;
+
+    /* ★ 핵심 수정: 글자가 잘리지 않도록 최소 너비 지정 & 패딩 조절 */
+    -fx-min-width: 35px;
+    -fx-padding: 5 0;        /* 양옆 여백을 0으로 줄여서 글자가 들어갈 공간 확보 */
+    -fx-alignment: CENTER;   /* 글자 가운데 정렬 */
+}
+
+/* 요일 버튼이 선택되었을 때 상태 */
+.day-btn:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;  /* 선택되면 완전 검은색 */
+    -fx-font-weight: bold;   /* 굵게 */
+    -fx-underline: false;
+}

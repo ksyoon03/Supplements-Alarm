@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="rootPane" style="-fx-background-color: transparent;" stylesheets="@alarmAddPopup.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nutrient_reminder.controller.AlarmAddPopupController">
+
+    <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="318.0" prefWidth="323.0" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #999999; -fx-border-width: 1;">
+
+        <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="40.0" />
+        </padding>
+
+        <Label fx:id="timeLabel" text="오전 00 : 08" textFill="BLACK">
+            <font>
+                <Font size="34.0" />
+            </font>
+        </Label>
+
+        <TextField fx:id="nameField" alignment="CENTER" prefHeight="45.0" prefWidth="288.0" promptText="약 이름" style="-fx-border-radius: 15; -fx-border-color: #888888; -fx-border-width: 1.5; -fx-background-color: white;">
+            <font>
+                <Font size="16.0" />
+            </font>
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </TextField>
+
+        <HBox alignment="CENTER" prefHeight="29.0" prefWidth="265.0" spacing="8.0">
+            <ToggleButton fx:id="sunToggle" prefWidth="40.0" styleClass="day-btn" text="일" />
+            <ToggleButton fx:id="monToggle" prefWidth="40.0" styleClass="day-btn" text="월" />
+            <ToggleButton fx:id="tueToggle" prefWidth="40.0" styleClass="day-btn" text="화" />
+            <ToggleButton fx:id="wedToggle" prefWidth="40.0" styleClass="day-btn" text="수" />
+            <ToggleButton fx:id="thuToggle" prefWidth="40.0" styleClass="day-btn" text="목" />
+            <ToggleButton fx:id="friToggle" prefWidth="40.0" styleClass="day-btn" text="금" />
+            <ToggleButton fx:id="satToggle" prefWidth="40.0" styleClass="day-btn" text="토" />
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </HBox>
+
+        <Button fx:id="saveButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSave" prefHeight="50.0" style="-fx-background-color: #BCE0F0; -fx-background-radius: 15; -fx-cursor: hand; -fx-text-fill: white;" text="저장">
+            <font>
+                <Font size="20.0" />
+            </font>
+            <VBox.margin>
+                <Insets top="15.0" />
+            </VBox.margin>
+        </Button>
+
+    </VBox>
+</StackPane>

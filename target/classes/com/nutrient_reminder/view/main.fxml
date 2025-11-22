@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nutrient_reminder.controller.MainController">
+
+    <VBox layoutX="0.0" layoutY="0.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <HBox alignment="CENTER_RIGHT" prefHeight="40.0" spacing="10.0">
+            <padding>
+                <Insets right="20.0" top="10.0" />
+            </padding>
+            <Label fx:id="userNameLabel" text="'아이디' 님" textFill="#555555">
+                <font>
+                    <Font size="12.0" />
+                </font>
+            </Label>
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-cursor: hand;" text="로그아웃" textFill="#555555">
+                <font>
+                    <Font size="12.0" />
+                </font>
+            </Button>
+        </HBox>
+
+        <HBox alignment="CENTER" prefHeight="60.0">
+            <Label text="알리미" textFill="#567889">
+                <font>
+                    <Font name="System Bold" size="36.0" />
+                </font>
+            </Label>
+        </HBox>
+
+        <HBox alignment="CENTER" prefHeight="50.0" spacing="150.0">
+            <Button fx:id="mainTabButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="메인" textFill="#555555">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Button>
+            <Button fx:id="recommendTabButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="영양제 추천" textFill="#999999">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Button>
+        </HBox>
+
+        <Separator prefHeight="3.0" prefWidth="556.0" />
+    </VBox>
+
+    <AnchorPane layoutY="160.0" prefHeight="440.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0">
+    </AnchorPane>
+
+    <Button fx:id="addButton" layoutX="730.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: #D0E8F2; -fx-cursor: hand;" text="+" textFill="#567889" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="180.0">
+        <font>
+            <Font name="System Bold" size="18.0" />
+        </font>
+    </Button>
+
+</AnchorPane>
