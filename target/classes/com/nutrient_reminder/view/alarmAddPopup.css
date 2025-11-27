@@ -1,0 +1,20 @@
+
+.day-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+
+
+    -fx-min-width: 35px;
+    -fx-padding: 5 0;
+    -fx-alignment: CENTER;
+}
+
+/*요일 버튼이 선택되었을 때 상태 */
+.day-btn:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+    -fx-underline: false;
+}
