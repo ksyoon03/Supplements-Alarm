@@ -76,26 +76,26 @@ public class SupplementRecommenderModel {
             // 해당 증상에 매핑된 영양 성분 리스트를 Map에서 가져옴.
             List<String> nutrients =  YOUNG_YANG.get(keyword);
 
-            // 가져온 영양 성분 리스트를 순회하며 Set에 하나씩 추가합니다. (이중 for 루프)
+            // 가져온 영양 성분 리스트를 순회하며 Set에 하나씩 추가 (이중 for 루프)
             // Set의 add() 기능이 동일한 성분명(예: 비타민 B군)의 중복 추가를 자동으로 막습니다.
             for (String nutrient : nutrients) {
                 uniqueNutrients.add(nutrient);
             }
         }
 
-        // 3. 최종 추천 목록을 포맷합니다.
+        // 3. 최종 추천 목록을 포맷
         List<String> finalRecommendations = new ArrayList<>();
 
         // 전체 추천 성분 개수를 포함한 제목 추가
         finalRecommendations.add("===== 종합 추천 영양 성분 (" + uniqueNutrients.size() + "가지) =====");
 
-        // 중복 제거된 성분 목록(Set)을 순회하며 상세 정보를 조회하고 포맷팅합니다.
+        // 중복 제거된 성분 목록(Set)을 순회하며 상세 정보를 조회하고 포맷팅
         for (String nutrient : uniqueNutrients) {
             // 성분 이름으로 상세 정보 Map에서 추천 제품 예시 및 참고 사항을 조회
             String[] details = YOUNG_YANG_EXPLAIN.get(nutrient);
 
 
-                // String.format을 사용하여 최종 출력 형식(성분명, 예시, 참고 사항)으로 문자열을 생성합니다.
+                // String.format을 사용하여 최종 출력 형식(성분명, 예시, 참고 사항)으로 문자열을 생성
                 String result = String.format(
                         "%s%n   - 추천 제품 예시: %s%n   - 참고 사항: %s%n",
                         nutrient, details[0], details[1]
@@ -111,11 +111,12 @@ public class SupplementRecommenderModel {
     // 4. UI 연동 메서드 (UI Integration)
     // --------------------------------------------------------------------------------
     public static List<String> getAllSymptoms() {
-        // Map의 KeySet(증상 목록)을 가져와 ArrayList로 변환하여 UI에 전달합니다.
-        // 이 리스트를 통해 JavaFX 컨트롤러가 체크박스 목록을 동적으로 생성합니다.
+        // Map의 KeySet(증상 목록)을 가져와 ArrayList로 변환하여 UI에 전달
+        // 이 리스트를 통해 JavaFX 컨트롤러가 체크박스 목록을 동적으로 생성
         return new ArrayList<>(YOUNG_YANG.keySet());
     }
 }
+
 
 
 
