@@ -18,12 +18,12 @@ import java.util.regex.Pattern;
 
 public class SignupController {
 
-    //UI 요소 연결
-    @FXML private TextField usernameField;   // 아이디 입력 필드
-    @FXML private PasswordField passwordField;  // 비밀번호 입력 필드
-    @FXML private PasswordField confirmField;   // 비밀번호 확인 필드
-    @FXML private Button signupButton;       // 회원가입 버튼
-    @FXML private Label hintLabel;           // 안내 문구 라벨
+
+    @FXML private TextField usernameField;
+    @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmField;
+    @FXML private Button signupButton;
+    @FXML private Label hintLabel;
 
 
     //HTTP 통신 클라이언트 설정
@@ -57,38 +57,37 @@ public class SignupController {
         String password = safe(passwordField.getText());
         String confirm  = safe(confirmField.getText());
 
-        // 1️ 입력값 유효성 검사
+        // 입력값 유효성 검사
         String err = validate(username, password, confirm);
         if (err != null) {
             showAlert(Alert.AlertType.WARNING, "입력 확인", err);
             return;
         }
 
-        // 2️ 서버로 보낼 JSON 데이터 생성
+        // 서버로 보낼 JSON 데이터 생성
         String json = String.format("{\"username\":\"%s\",\"password\":\"%s\"}",
                 escapeJson(username), escapeJson(password));
 
-        // 3️ 회원가입 API 요청 생성
+        // 회원가입 API 요청 생성
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/api/register"))
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        // 4️ 버튼 비활성화 후 비동기 요청 전송
+        // 4버튼 비활성화 후 비동기 요청 전송
         setBusy(true);
         http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
                 .whenComplete((resp, throwable) -> {
-                    Platform.runLater(() -> setBusy(false));  // 완료 후 다시 활성화
+                    Platform.runLater(() -> setBusy(false));
 
-                    // 네트워크 오류 처리
+
                     if (throwable != null) {
                         Platform.runLater(() ->
                                 showAlert(Alert.AlertType.ERROR, "네트워크 오류", throwable.getMessage()));
                         return;
                     }
 
-                    // 서버 응답 처리
                     int status = resp.statusCode();
                     String body = resp.body();
                     String msg  = extractMessage(body);
@@ -100,19 +99,17 @@ public class SignupController {
                             usernameField.clear();
                             passwordField.clear();
                             confirmField.clear();
-
-                            // 로그인 화면으로 이동
                             navigateToLogin();
                         });
-                    } else if (status == 409) { // 아이디 중복
+                    } else if (status == 409) {
                         Platform.runLater(() ->
                                 showAlert(Alert.AlertType.WARNING, "아이디 중복",
                                         msg.isEmpty() ? "이미 사용 중인 아이디입니다." : msg));
-                    } else if (status == 400) { // 요청 형식 오류
+                    } else if (status == 400) {
                         Platform.runLater(() ->
                                 showAlert(Alert.AlertType.WARNING, "요청 형식 오류",
                                         msg.isEmpty() ? "입력값을 확인해주세요." : msg));
-                    } else { // 기타 오류
+                    } else {
                         Platform.runLater(() ->
                                 showAlert(Alert.AlertType.ERROR, "서버 오류",
                                         "요청 실패 (" + status + ")\n" + (msg.isEmpty() ? body : msg)));
@@ -122,12 +119,11 @@ public class SignupController {
 
     // ++ 로그인 화면으로 이동
     private void navigateToLogin() {
-        // login-view.fxml 파일 불러오기
+
         try {
             Parent root = FXMLLoader.load(
                     getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
 
-            // 현재 Stage 창 객체 가져오기
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("로그인");
@@ -200,17 +196,18 @@ public class SignupController {
     @FXML
     private void goToLogin(ActionEvent e) {
         try {
-            //login_view 파일 불러오기
             Parent root = FXMLLoader.load(
                     getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
 
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();    //현재 Stage 창 객체 가져오기
-            stage.setScene(new Scene(root));    // 새로운 Scene(로그인 화면) 설정
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.setTitle("로그인");
-            stage.show(); // 새 화면 표시
+            stage.show();
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+
 }

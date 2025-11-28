@@ -1,6 +1,8 @@
 package com.nutrient_reminder.controller;
 
 import com.nutrient_reminder.SupplementRecommenderModel;
+import com.nutrient_reminder.service.UserSession; // ++ 전광판 사용
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +18,9 @@ import java.util.Optional;
 import java.io.IOException;
 import java.util.*;
 
+import javafx.scene.input.MouseEvent;
+import javafx.scene.Node;
+
 public class NutrientCheckController {
 
     @FXML
@@ -24,6 +29,7 @@ public class NutrientCheckController {
     @FXML
     private Label userLabel;
 
+    /*
     private String username;
 
     public void setUsername(String username) {
@@ -32,12 +38,20 @@ public class NutrientCheckController {
             userLabel.setText("'" + username + "' 님");
         }
     }
+    */
 
     @FXML
     public void initialize() {
+        // ++
+
+        String currentId = UserSession.getUserId();
+        if (userLabel != null && currentId != null) {
+            userLabel.setText("'" + currentId + "' 님");
+        }
+
         List<String> symptoms = SupplementRecommenderModel.getAllSymptoms();
 
-        // 초성별로 그룹화
+
         Map<Character, List<String>> groupedSymptoms = groupByInitialConsonant(symptoms);
 
         int row = 0;
@@ -128,11 +142,15 @@ public class NutrientCheckController {
         if (result.isPresent() && result.get() == yesButton) {
             // "예" 클릭 시 로그인 페이지로 이동
             try {
+                // ++ 로그아웃 시 전광판 지우기
+                UserSession.clear();
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) checkboxGrid.getScene().getWindow();
                 stage.setScene(new Scene(root, 750, 600));
+                stage.setTitle("로그인"); // 창 제목 변경
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -140,4 +158,38 @@ public class NutrientCheckController {
         // "아니요" 클릭 시 팝업이 자동으로 닫힘
     }
 
+    // ++ 마우스 액션 추가 ( 작아지기 )
+    @FXML
+    private void onHoverEnter(MouseEvent event) {
+        Node node = (Node) event.getSource();
+        node.setScaleX(0.95); // 가로 0.95배
+        node.setScaleY(0.95); // 세로 0.95배
+    }
+
+    // ++ 마우스 액션 추가 ( 원래대로 )
+    @FXML
+    private void onHoverExit(MouseEvent event) {
+        Node node = (Node) event.getSource();
+        node.setScaleX(1.0);
+        node.setScaleY(1.0);
+    }
+
+    // ++ 메인으로 이동
+    @FXML
+    private void onMainClick() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/main.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) checkboxGrid.getScene().getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("영양제 알리미");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("메인 화면으로 이동 실패: 경로를 확인해주세요.");
+        }
+    }
 }

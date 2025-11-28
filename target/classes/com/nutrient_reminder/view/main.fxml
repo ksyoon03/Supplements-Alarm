@@ -34,13 +34,19 @@
         </HBox>
 
         <HBox alignment="CENTER" prefHeight="50.0" spacing="150.0">
-            <Button fx:id="mainTabButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="메인" textFill="#555555">
+            <Button fx:id="mainTabButton" mnemonicParsing="false"
+                    onMouseEntered="#onHoverEnter"
+                    onMouseExited="#onHoverExit"
+                    style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="메인" textFill="#555555">
                 <font>
                     <Font size="16.0" />
                 </font>
             </Button>
 
-            <Button fx:id="recommendTabButton" mnemonicParsing="false" onAction="#handleRecommendTab" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="영양제 추천" textFill="#999999">
+            <Button fx:id="recommendTabButton" mnemonicParsing="false" onAction="#handleRecommendTab"
+                    onMouseEntered="#onHoverEnter"
+                    onMouseExited="#onHoverExit"
+                    style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="영양제 추천" textFill="#999999">
                 <font>
                     <Font size="16.0" />
                 </font>
@@ -50,9 +56,20 @@
         <Separator prefHeight="3.0" prefWidth="556.0" />
     </VBox>
 
-    <AnchorPane layoutY="160.0" prefHeight="440.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0">
-    </AnchorPane>
+    <ScrollPane layoutY="160.0" prefHeight="440.0" prefWidth="800.0"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true"
+                style="-fx-background-color: white; -fx-background: white;"
+                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0">
 
+        <content>
+            <VBox fx:id="alarmListContainer" spacing="15.0" style="-fx-background-color: white;">
+                <padding>
+                    <Insets top="80.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
     <Button fx:id="addButton" layoutX="730.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: #D0E8F2; -fx-cursor: hand;" text="+" textFill="#567889" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="180.0">
         <font>
             <Font name="System Bold" size="18.0" />
