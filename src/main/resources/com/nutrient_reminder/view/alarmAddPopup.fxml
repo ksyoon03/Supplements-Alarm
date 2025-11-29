@@ -5,8 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<<<<<<< HEAD
 <StackPane fx:id="rootPane" style="-fx-background-color:transparent;"
            stylesheets="@style-sheets/alarmAddPopup.css, @style-sheets/font.css"
+=======
+<StackPane fx:id="rootPane" style="-fx-background-color:
+transparent;" stylesheets="@style-sheets/alarmAddPopup.css"
+>>>>>>> main
            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.nutrient_reminder.controller.AlarmAddPopupController">
 

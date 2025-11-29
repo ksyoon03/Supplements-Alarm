@@ -5,7 +5,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="rootPane" style="-fx-background-color: transparent;" stylesheets="@alarmAddPopup.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nutrient_reminder.controller.AlarmAddPopupController">
+<StackPane fx:id="rootPane" style="-fx-background-color:
+transparent;" stylesheets="@style-sheets/alarmAddPopup.css"
+           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.nutrient_reminder.controller.AlarmAddPopupController">
 
     <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="318.0" prefWidth="323.0" spacing="15.0" style="-fx-background-color: white; -fx-border-color: #999999; -fx-border-width: 1;">
 

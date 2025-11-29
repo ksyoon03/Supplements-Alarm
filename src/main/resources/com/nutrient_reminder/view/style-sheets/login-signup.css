@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 /* 전체 배경 */
 .root {
     -fx-background-color: #ecf6fa;
+=======
+/* 🌟 전체 배경 */
+.root {
+    -fx-background-color: #ecf6fa;
+    -fx-font-family: 'Malgun Gothic', sans-serif;
+>>>>>>> main
 }
 
 /* ⬜ 컨테이너 */

@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<!-- 1. 최상위 컨테이너: 전체 배경 (CSS 연결됨) -->
+<!-- stylesheets 경로가 'style-sheets' 폴더 안에 있음을 반영했습니다 -->
+<StackPane prefHeight="600.0" prefWidth="800.0"
+           stylesheets="@style-sheets/login-signup.css"
+           xmlns="http://javafx.com/javafx/17.0.6"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.nutrient_reminder.controller.SignupController">
 
+<<<<<<< HEAD
+    <!-- 2. 회원가입 카드: 흰색 박스 (styleClass="login-card") -->
+    <!-- 로그인 창과 통일감을 위해 maxWidth를 400으로 설정했습니다 -->
+    <VBox alignment="CENTER" maxWidth="400.0" maxHeight="550.0" spacing="15.0" styleClass="login-card">
+=======
 <!--UI 요소 세로 정렬-->
 <VBox alignment="CENTER"
       spacing="16.0"
@@ -16,59 +34,39 @@
       prefHeight="600.0"
       minWidth="400.0"
       minHeight="300.0">
+>>>>>>> 05f93a66bdedda8524cade24b0f7b058938444b3
 
-    <!--UI 요소의 내부 여백 설정-->
-    <padding>
-        <Insets top="24" right="24" bottom="24" left="24"/>
-    </padding>
+        <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+        </padding>
 
+        <!-- 제목 (회원가입) -->
+        <Label styleClass="title-label" text="회원가입">
+            <font>
+                <Font name="Malgun Gothic Bold" size="24.0" />
+            </font>
+        </Label>
 
-    <!--화면 상단 제목 라벨-->
-    <Label text="회원가입">
-        <font>
-            <Font name="Malgun Gothic Bold" size="22"/>
-        </font>
-    </Label>
+        <!-- 입력 필드 모음 -->
+        <VBox spacing="12.0">
+            <TextField fx:id="usernameField" maxWidth="Infinity" promptText="아이디 (영문/숫자 4~20자)" />
+            <PasswordField fx:id="passwordField" maxWidth="Infinity" promptText="비밀번호 (8~32자)" />
+            <PasswordField fx:id="confirmField" maxWidth="Infinity" promptText="비밀번호 확인" />
+        </VBox>
 
+        <!-- 안내 문구 -->
+        <Label fx:id="hintLabel" styleClass="hint-label"
+               text="아이디는 영문/숫자 4~20자, 비밀번호는 8~32자를 권장해요."
+               wrapText="true" textAlignment="CENTER" maxWidth="Infinity" alignment="CENTER"/>
 
-    <!--아이디 / 비밀번호 / 비밀번호 확인 -->
-    <TextField fx:id="usernameField"
-               promptText="아이디 (영문/숫자 4~20자)"
-               maxWidth="260"/>
+        <!-- 회원가입 버튼 -->
+        <Button fx:id="signupButton" defaultButton="true" maxWidth="Infinity" onAction="#signupAction" text="회원가입" />
 
-    <PasswordField fx:id="passwordField"
-                   promptText="비밀번호 (8~32자)"
-                   maxWidth="260"/>
+        <!-- 로그인 이동 링크 -->
+        <HBox alignment="CENTER" spacing="5.0">
+            <Label style="-fx-text-fill: #b0bec5; -fx-font-size: 12px;" text="이미 계정이 있으신가요?" />
+            <Hyperlink onAction="#goToLogin" styleClass="hyperlink" text="로그인" />
+        </HBox>
 
-    <PasswordField fx:id="confirmField"
-                   promptText="비밀번호 확인"
-                   maxWidth="260"/>
-
-
-    <!--비밀번호 표시 옵션-->
-    <!-- 보류
-    <HBox spacing="10" alignment="CENTER">
-        <CheckBox fx:id="showPasswordCheck" text="비밀번호 표시"/>
-    </HBox>-->
-
-    <!--회원가입 버튼-->
-    <Button fx:id="signupButton"
-            text="회원가입"
-            onAction="#signupAction"
-            defaultButton="true"
-            prefWidth="260"/>
-    <!--Button(회원가입 버튼) / text="회원가입"(버튼 텍스트) / onAction="#signupAction"(클릭 시 회원가입 처리)-->
-
-
-    <!--입력 안내 문구-->
-    <Label fx:id="hintLabel"
-           textFill="#A9A9A9"
-           wrapText="true"
-           maxWidth="300"
-           alignment="CENTER"
-           textAlignment="CENTER"
-           style="-fx-font-size: 12px;"
-           text="아이디는 영문/숫자 4~20자, 비밀번호는 8~32자를 권장해요."/>
-    <!--Label(입력 안내 문구) / textFill="#A9A9A9"(글자색 회색) / 중앙 정렬 / 글자 크기 12px-->
-
-</VBox>
+    </VBox>
+</StackPane>
