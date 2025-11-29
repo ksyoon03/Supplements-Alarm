@@ -25,6 +25,7 @@ import javafx.scene.layout.Priority;
 import com.nutrient_reminder.service.AlarmSchedulerService;
 import com.nutrient_reminder.service.AlarmSchedulerService.AlarmStatusListener;
 import javafx.event.ActionEvent; // 버튼 액션을 위해 추가
+import com.nutrient_reminder.model.Nutrient; // 💡 알람 객체 모델 import 추가 (필수)
 
 // 💡 AlarmAddPopupController.AlarmSaveListener 인터페이스와 AlarmSchedulerService.AlarmStatusListener를 모두 구현합니다.
 public class MainController implements AlarmAddPopupController.AlarmSaveListener, AlarmStatusListener {
@@ -64,10 +65,23 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         // 💡 1. MainController를 알람 상태 변화 리스너로 등록
         service.addListener(this);
 
-        // 💡 2. 저장된 알람을 불러와 UI에 표시하는 로직 (이 부분은 추후 구현 예정)
-        // for (Alarm alarm : service.getAllActiveAlarms()) {
-        //     addAlarmToUI(alarm.getDateText(), alarm.getTimeText(), alarm.getName(), alarm.getSubTime(), alarm.getId());
-        // }
+        // 💡 2. [수정 활성화] 저장된 알람을 불러와 UI에 표시하는 로직
+        // '영양제 추천' 탭에 다녀올 때 MainController가 새로 생성되어도 알람이 유지됩니다.
+        for (Nutrient alarm : service.getScheduledAlarms()) {
+            // 요일 정보 포맷: 예시: "월, 수, 금요일 (매주 반복)" 또는 "반복 없음"
+            String dateText = alarm.getDays().isEmpty()
+                    ? "반복 없음"
+                    : String.join(", ", alarm.getDays()) + "요일 (매주 반복)";
+
+            // 시간 정보 포맷 (메인): 예시: "09:30"
+            // 저장된 time 형식: "오전 09 : 30" -> "09:30"으로 변환
+            String timeTextRaw = alarm.getTime().replaceAll("오전|오후", "").trim();
+            String timeText = timeTextRaw.replaceAll(" : ", ":");
+
+            // addAlarmToUI 호출
+            // subTime 인자에는 원본 'time' (예: "오전 09 : 30")을 전달합니다.
+            addAlarmToUI(dateText, timeText, alarm.getName(), alarm.getTime(), alarm.getId());
+        }
     }
 
     // 알림박스 메소드 (깔끔한 디자인 및 두 개의 버튼, ID 추가)
@@ -172,9 +186,9 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         System.out.println("알람 액션 클릭됨: " + action + ", ID: " + alarmId);
 
         if ("먹었습니다".equals(action)) {
-            // service.completeAlarm(alarmId); // 실제 서비스 호출
+            service.updateAlarmStatus(alarmId, "COMPLETED"); // 실제 서비스 호출 활성화
         } else if ("30분 뒤 다시 울림".equals(action)) {
-            // service.snoozeAlarm(alarmId); // 실제 서비스 호출
+            service.updateAlarmStatus(alarmId, "SNOOZED"); // 실제 서비스 호출 활성화
         }
     }
 
@@ -230,7 +244,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
             Parent root = loader.load();
             Stage stage = (Stage) userNameLabel.getScene().getWindow();
 
-            // ⭐최대화 유지 로직 추가⭐
+            // 최대화 유지 로직 추가
             stage.setScene(new Scene(root));
             stage.setMaximized(true);
             stage.setTitle("로그인");
@@ -252,7 +266,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
             Parent root = loader.load();
             Stage stage = (Stage) recommendTabButton.getScene().getWindow();
 
-            // ⭐최대화 유지 로직 추가⭐
+            // 최대화 유지 로직 추가
             stage.setScene(new Scene(root));
             stage.setMaximized(true);
             stage.setTitle("영양제 추천");
@@ -295,9 +309,9 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
     public void onAlarmSaved(String name, List<String> days, String time) {
         // 팝업 컨트롤러로부터 받은 데이터를 서비스에 전달 및 화면 표시
 
-        // (임시) 새 알람 ID 생성 및 서비스에 알람 등록 (실제 로직은 서비스에 구현되어야 함)
+        // (임시) 새 알람 ID 생성 및 서비스에 알람 등록
         String newAlarmId = "alarm_" + (System.currentTimeMillis() % 10000);
-        // service.registerAlarm(name, time, days, newAlarmId); // 실제 서비스 호출
+        service.registerAlarm(name, time, days, newAlarmId); // 💡 실제 서비스 호출 활성화
 
         // 날짜 텍스트 설정: 예시: "월, 수, 금요일 (매주 반복)" 또는 "반복 없음"
         String dateText = days.isEmpty()
@@ -316,10 +330,10 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         addAlarmToUI(dateText, timeText, name, subTime, newAlarmId);
     }
 
-    // 💡 AlarmSchedulerService.AlarmStatusListener 인터페이스 구현 (백그라운드 알림 상태 수신)
+    //  AlarmSchedulerService.AlarmStatusListener 인터페이스 구현 (백그라운드 알림 상태 수신)
     @Override
     public void onAlarmStatusChanged(String alarmId, String newStatus) {
-        System.out.printf("메인 컨트롤러: 알람 ID %s의 상태가 %s로 변경되었음을 수신함.\n", alarmId, newStatus);
+        System.out.printf("메인 컨트롤러: 알람 ID %s의 상태가 %s로 변경되었음을 수신함.\\n", alarmId, newStatus);
 
         for (Node node : alarmListContainer.getChildren()) {
             if (node instanceof VBox) {

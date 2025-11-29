@@ -16,7 +16,7 @@ import java.util.Optional; // Optional 추가
 
 public class AlarmAddPopupController {
 
-    // 💡 새로운 알람 정보를 메인 컨트롤러로 전달하기 위한 인터페이스 정의
+    // 새로운 알람 정보를 메인 컨트롤러로 전달하기 위한 인터페이스 정의
     public interface AlarmSaveListener {
         // name: 약 이름, days: 선택된 요일 목록, time: "오전 09 : 30" 형식의 시간
         void onAlarmSaved(String name, List<String> days, String time);
@@ -29,7 +29,7 @@ public class AlarmAddPopupController {
         this.listener = listener;
     }
 
-    // 💡 FXML 필드
+    // FXML 필드
     @FXML private Label ampmLabel;
     @FXML private TextField hourField;
     @FXML private TextField minuteField;

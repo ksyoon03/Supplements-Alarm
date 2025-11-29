@@ -73,7 +73,7 @@ public class LoginController {
                 stage.setScene(new Scene(root));
                 stage.setTitle("영양제 알리미");
 
-                // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
+                // 수정: 화면 전환 후 최대화 다시 적용
                 stage.setMaximized(true);
                 stage.show();
 
@@ -125,7 +125,7 @@ public class LoginController {
         stage.setScene(new Scene(root));
         stage.setTitle("회원가입");
 
-        // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
+        // 수정: 화면 전환 후 최대화 다시 적용
         stage.setMaximized(true);
 
         // 화면 표시

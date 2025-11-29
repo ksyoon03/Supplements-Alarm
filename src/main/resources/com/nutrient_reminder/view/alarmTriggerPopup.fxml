@@ -11,7 +11,8 @@
 <VBox alignment="CENTER" prefHeight="150.0" prefWidth="350.0" spacing="15.0"
       style="-fx-background-color: white; -fx-border-color: #A9DCEE; -fx-border-width: 2; -fx-background-radius: 10;"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.nutrient_reminder.controller.AlarmTriggerController">
+      fx:controller="com.nutrient_reminder.controller.AlarmTriggerController"
+      stylesheets="@style-sheets/font.css">
 
     <padding>
         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

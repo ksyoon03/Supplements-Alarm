@@ -1,38 +1,117 @@
 package com.nutrient_reminder;
 
-// JavaFX 라이브러리
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-// 입출력 오류 처리를 위한 클래스
+import javafx.scene.Parent;
+
 import java.io.IOException;
 
-// Application 클래스 상속
-// Application 클래스 = 부모 클래스
+// AWT 관련 import
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.net.URL;
+
 public class Main extends Application {
-    @Override   // 부모 클래스 (Application 클래스)의 메서드를 재정의한다는 것을 명시하는 어노테이션
+
+    private static Stage primaryStageInstance;
+    private TrayIcon trayIcon;
+
+    @Override
     public void start(Stage stage) throws IOException {
-        // 파일 불러오기 중 오류 발생 시 상위 호출자에게 처리 위임
+        primaryStageInstance = stage;
 
-        // FXML 로드 방식은 이전에 수정했던 안정적인 코드를 유지합니다.
+        // SystemTray 지원 시 AWT 연동 시작 (백그라운드 실행 기반)
+        if (SystemTray.isSupported()) {
+            try {
+                setupSystemTray(stage);
+            } catch (AWTException e) {
+                System.err.println("AWT SystemTray 초기화 실패: " + e.getMessage());
+            }
+        }
+
+        // FXML 로드 및 메인 스테이지 설정 (로그인 화면)
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
-
-        // login-view.fxml 파일 불러오기
-        // ⭐[수정된 부분]: Scene 생성 시 고정된 크기 인자 (750, 600) 제거⭐
         Scene scene = new Scene(fxmlLoader.load());
-        // 불러온 파일로부터 로드한 UI 요소들을 담는 객체 생성
 
-        stage.setTitle("영양제 알리미"); // 프로그램 제목
-        stage.setScene(scene); // 로그인 화면 구성
-
-        // ⭐setMaximized(true) 명령은 그대로 유지⭐
+        stage.setTitle("영양제 알리미");
+        stage.setScene(scene);
         stage.setMaximized(true);
 
-        stage.show();   // 로그인 화면 출력
+        //  닫기 버튼을 눌렀을 때 윈도우를 숨기고 종료하지 않도록 설정
+        stage.setOnCloseRequest(event -> {
+            if (SystemTray.isSupported()) {
+                event.consume(); // 기본 종료 이벤트 무시
+                stage.hide();    // 창만 숨김
+                // 트레이 알림 (아이콘이 null이 아닐 때만)
+                if (trayIcon != null) {
+                    trayIcon.displayMessage("영양제 알리미", "프로그램이 백그라운드에서 실행 중입니다.", TrayIcon.MessageType.INFO);
+                }
+            } else {
+                Platform.exit();
+            }
+        });
+
+        stage.show();
+    }
+
+    // AWT SystemTray 설정 메서드
+    private void setupSystemTray(final Stage stage) throws AWTException {
+        Platform.setImplicitExit(false);
+
+        SystemTray tray = SystemTray.getSystemTray();
+
+        // 아이콘 로드 (경로 오류 방지를 위해 임시 아이콘 사용 가능)
+        URL iconURL = getClass().getResource("/com/nutrient_reminder/view/images/icon.png");
+        Image image;
+
+        if (iconURL == null) {
+            image = new java.awt.image.BufferedImage(16, 16, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        } else {
+            image = Toolkit.getDefaultToolkit().getImage(iconURL);
+        }
+
+        trayIcon = new TrayIcon(image, "영양제 알리미");
+        trayIcon.setImageAutoSize(true);
+
+        // 메뉴 아이템 설정
+        PopupMenu popup = new PopupMenu();
+
+        // '보이기/숨기기' 메뉴
+        MenuItem showItem = new MenuItem("보이기/숨기기");
+        showItem.addActionListener(e -> Platform.runLater(() -> {
+            if (stage.isShowing()) {
+                stage.hide();
+            } else {
+                stage.show();
+                stage.toFront();
+            }
+        }));
+        popup.add(showItem);
+
+        // '종료' 메뉴
+        MenuItem exitItem = new MenuItem("종료");
+        exitItem.addActionListener(e -> {
+            tray.remove(trayIcon);
+            Platform.exit();
+            System.exit(0);
+        });
+        popup.add(exitItem);
+
+        trayIcon.setPopupMenu(popup);
+        tray.add(trayIcon);
+
+        // 아이콘 더블클릭 이벤트 (윈도우 표시)
+        trayIcon.addActionListener(e -> Platform.runLater(stage::show));
     }
 
     public static void main(String[] args) {
-        launch(); // 프로그램 실행
+        launch();
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStageInstance;
     }
 }
