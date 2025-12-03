@@ -5,8 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nutrient_reminder.controller.MainController">
 
+<AnchorPane style="-fx-background-color: white;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.nutrient_reminder.controller.MainController"
+
+            stylesheets="@style-sheets/font.css">
     <VBox layoutX="0.0" layoutY="0.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
         <HBox alignment="CENTER_RIGHT" prefHeight="40.0" spacing="10.0">
@@ -43,14 +47,10 @@
                 </font>
             </Button>
 
-<<<<<<< HEAD
             <Button fx:id="recommendTabButton" mnemonicParsing="false" onAction="#handleRecommendTab"
                     onMouseEntered="#onHoverEnter"
                     onMouseExited="#onHoverExit"
                     style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="영양제 추천" textFill="#999999">
-=======
-            <Button fx:id="recommendTabButton" mnemonicParsing="false" onAction="#handleRecommendTab" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-cursor: hand;" text="영양제 추천" textFill="#999999">
->>>>>>> 05f93a66bdedda8524cade24b0f7b058938444b3
                 <font>
                     <Font size="16.0" />
                 </font>
@@ -74,6 +74,7 @@
             </VBox>
         </content>
     </ScrollPane>
+
     <Button fx:id="addButton" layoutX="730.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: #D0E8F2; -fx-cursor: hand;" text="+" textFill="#567889" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="180.0">
         <font>
             <Font name="System Bold" size="18.0" />

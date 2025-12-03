@@ -1,66 +1,65 @@
-/* 🌟 전체 배경 (화면 전체) */
+/* 🌟 전체 배경 */
 .root {
-    -fx-background-color: #ecf6fa; /* 이미지의 아주 연한 하늘색 배경 */
-    -fx-font-family: 'Malgun Gothic', sans-serif;
+    -fx-background-color: #ecf6fa;
+    -fx-font-family: 'Malgun Gothic', sans-serif; /* 폰트 설정 통합 */
 }
 
-/* ⬜ 로그인/회원가입 카드 (흰색 박스) */
-/* FXML에서 VBox에 styleClass="login-card"를 추가해야 합니다 */
+/* ⬜ 컨테이너 */
 .login-card {
     -fx-background-color: white;
-    -fx-background-radius: 30; /* 둥근 모서리 */
+    -fx-background-radius: 30;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 4); /* 은은한 그림자 */
-    -fx-padding: 40; /* 내부 여백을 넉넉하게 */
+    -fx-padding: 40;
 }
 
-/* 🏷️ 제목 라벨 (알리미) */
+/* 제목*/
 .title-label {
-    -fx-text-fill: #546e7a; /* 차분한 블루그레이 톤 */
+    -fx-text-fill: #546e7a;
     -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-alignment: center;
 }
 
-/* 📝 입력 필드 (아이디, 비밀번호) - 알약 모양 */
+/* 텍스트 박스 */
 .text-field, .password-field {
     -fx-background-color: white;
-    -fx-background-radius: 50; /* 완전한 둥근 모양 (Pill shape) */
-    -fx-border-color: #cfd8dc; /* 연한 회색 테두리 */
+    -fx-background-radius: 50;
+    -fx-border-color: #cfd8dc;
     -fx-border-radius: 50;
     -fx-border-width: 1.5;
-    -fx-padding: 12 20 12 20; /* 텍스트가 둥근 부분에 가리지 않도록 여백 조정 */
+    -fx-padding: 12 20 12 20;
     -fx-prompt-text-fill: #b0bec5;
     -fx-font-size: 14px;
 }
 
-/* 포커스 됐을 때 (입력 중일 때) */
+/* 입력 중 */
 .text-field:focused, .password-field:focused {
-    -fx-border-color: #81d4fa; /* 포커스 시 부드러운 하늘색 */
+    -fx-border-color: #81d4fa;
     -fx-background-color: #fafafa;
 }
 
-/* 🔘 버튼 (로그인, 회원가입) - 알약 모양 */
+/* 🔘버튼 */
 .button {
-    -fx-background-color: #a8dff5; /* 이미지의 파스텔톤 하늘색 */
+    -fx-background-color: #a8dff5;
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-background-radius: 50; /* 알약 모양 */
+    -fx-background-radius: 50;
     -fx-cursor: hand;
-    -fx-pref-height: 45; /* 버튼 높이 고정 */
+    -fx-pref-height: 45;
 }
 
 .button:hover {
-    -fx-background-color: #81d4fa; /* 마우스 올렸을 때 조금 더 진하게 */
+    -fx-background-color: #81d4fa;
 }
 
 .button:pressed {
-    -fx-background-color: #4fc3f7; /* 클릭 시 */
+    -fx-background-color: #4fc3f7;
 }
 
-/* 🔗 하단 링크 (회원가입 하시겠습니까?) */
+/*회원가입 하시겠습니까? */
 .hyperlink {
-    -fx-text-fill: #90a4ae; /* 연한 회색 텍스트 */
+    -fx-text-fill: #90a4ae;
     -fx-font-size: 12px;
     -fx-underline: false;
     -fx-border-color: transparent;
@@ -71,9 +70,9 @@
     -fx-underline: true;
 }
 
-/* ⚠️ 힌트 라벨 */
+/* 빨간 글씨 */
 .hint-label {
-    -fx-text-fill: #ff8a80; /* 오류/안내는 부드러운 붉은색 */
+    -fx-text-fill: #ff8a80;
     -fx-font-size: 11px;
     -fx-padding: 0 0 0 10;
 }
