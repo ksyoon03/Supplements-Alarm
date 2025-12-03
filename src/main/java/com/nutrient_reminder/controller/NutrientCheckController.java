@@ -133,19 +133,12 @@ public class NutrientCheckController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 UserSession.clear();
-                // 로그인 화면으로 이동
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
                 Parent root = loader.load();
 
                 Scene currentScene = checkboxGrid.getScene();
+
                 currentScene.setRoot(root);
-
-                Stage stage = (Stage) currentScene.getWindow();
-                stage.setTitle("로그인");
-
-                // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
-                stage.setMaximized(true);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -181,19 +174,15 @@ public class NutrientCheckController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/main.fxml"));
             Parent root = loader.load();
 
-            // setRoot 방식 채택 (효율적)
             Scene currentScene = checkboxGrid.getScene();
-            currentScene.setRoot(root);
-
             Stage stage = (Stage) currentScene.getWindow();
-            stage.setTitle("영양제 알리미");
 
-            // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
-            stage.setMaximized(true);
+            // setScene 대신 setRoot 사용
+            currentScene.setRoot(root);
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("메인 화면으로 이동 실패: 경로를 확인해주세요.");
+            System.out.println("메인 화면으로 이동 실패");
         }
     }
 }

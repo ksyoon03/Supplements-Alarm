@@ -64,20 +64,17 @@ public class LoginController {
                 //UserSession에 아이디 저장!
                 UserSession.setUserId(username);
 
-                // 이동할 화면을 'main.fxml'로 변경
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/main.fxml"));
-                Parent root = loader.load();
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/main.fxml"));
+                    Parent root = loader.load();
 
-                // 화면 전환 및 창 제목 설정
-                Stage stage = (Stage) idField.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("영양제 알리미");
+                    // 화면 깜빡임 제거
+                    Stage stage = (Stage) idField.getScene().getWindow();
+                    stage.getScene().setRoot(root);
 
-                // 수정: 화면 전환 후 최대화 다시 적용
-                stage.setMaximized(true);
-                stage.show();
-
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             else{
                 System.out.println("로그인 실패" + response.body());
@@ -111,25 +108,10 @@ public class LoginController {
     //++ 회원가입 하이퍼링크 추가 (>>> main 버전의 깔끔한 전환 로직 사용)
     @FXML
     private void goToSignup(ActionEvent e) throws IOException {
-        // signup.fxml 파일을 불러와 새로운 화면 구성
-        Parent root = FXMLLoader.load(
-                Objects.requireNonNull(
-                        getClass().getResource("/com/nutrient_reminder/view/signup.fxml")
-                )
-        );
-
-        // 현재 창(Stage)을 가져와 화면 전환
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/nutrient_reminder/view/signup.fxml")));
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
 
-        // 새 Scene 설정 및 타이틀 변경
-        stage.setScene(new Scene(root));
-        stage.setTitle("회원가입");
-
-        // 수정: 화면 전환 후 최대화 다시 적용
-        stage.setMaximized(true);
-
-        // 화면 표시
-        stage.show();
+        stage.getScene().setRoot(root);
     }
 
 }

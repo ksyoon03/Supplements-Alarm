@@ -206,11 +206,13 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
             UserSession.clear();
             Parent root = FXMLLoader.load(getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
             Stage stage = (Stage) userNameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setMaximized(true);
-            stage.setTitle("로그인");
-            stage.show();
-        } catch (IOException e) { e.printStackTrace(); }
+
+            // Root 교체 방식으로 변경
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -218,11 +220,13 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/com/nutrient_reminder/view/nutrient-check.fxml"));
             Stage stage = (Stage) recommendTabButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setMaximized(true);
-            stage.setTitle("영양제 추천");
-            stage.show();
-        } catch (IOException e) { e.printStackTrace(); }
+
+            // Root 교체 방식으로 변경
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
