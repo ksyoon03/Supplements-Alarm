@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-/* 전체 배경 */
-.root {
-    -fx-background-color: #ecf6fa;
-=======
 /* 🌟 전체 배경 */
 .root {
     -fx-background-color: #ecf6fa;
-    -fx-font-family: 'Malgun Gothic', sans-serif;
->>>>>>> main
+    -fx-font-family: 'Malgun Gothic', sans-serif; /* 폰트 설정 통합 */
 }
 
 /* ⬜ 컨테이너 */
@@ -18,7 +12,7 @@
     -fx-padding: 40;
 }
 
-/*  제목*/
+/* 제목*/
 .title-label {
     -fx-text-fill: #546e7a;
     -fx-font-size: 24px;

@@ -5,11 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: white;"
+
+<AnchorPane style="-fx-background-color: white;"
             xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.nutrient_reminder.controller.MainController"
-            stylesheets="@style-sheets/font.css">
 
+            stylesheets="@style-sheets/font.css">
     <VBox layoutX="0.0" layoutY="0.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
         <HBox alignment="CENTER_RIGHT" prefHeight="40.0" spacing="10.0">
@@ -73,6 +74,7 @@
             </VBox>
         </content>
     </ScrollPane>
+
     <Button fx:id="addButton" layoutX="730.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: #D0E8F2; -fx-cursor: hand;" text="+" textFill="#567889" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="180.0">
         <font>
             <Font name="System Bold" size="18.0" />
