@@ -35,7 +35,7 @@ public class SupplementRecommenderModel {
         YOUNG_YANG.put("기억력 감퇴", List.of("포스파티딜세린"));
         YOUNG_YANG.put("눈 침침함 (노안)", List.of("루테인", "비타민 A"));
         YOUNG_YANG.put("눈 건조/피로", List.of("오메가3", "비타민 A"));
-        YOUNG_YANG.put("야맹증", List.of("비타민 A"));
+        YOUNG_YANG.put("야맹증 (밤에 잘 안 보임)", List.of("비타민 A"));
         YOUNG_YANG.put("구내염/입병", List.of("비타민 B2", "비타민 C"));
         YOUNG_YANG.put("속당김 (피부 건조)", List.of("히알루론산", "비타민 A"));
         YOUNG_YANG.put("피부 노화 (주름)", List.of("비타민 C", "비타민 E"));
@@ -48,14 +48,14 @@ public class SupplementRecommenderModel {
         YOUNG_YANG.put("식욕 부진", List.of("아연"));
         YOUNG_YANG.put("잦은 음주 (간)", List.of("밀크씨슬"));
         YOUNG_YANG.put("탄수화물 과다 (살)", List.of("가르시니아", "비타민 B1", "판토텐산"));
-        YOUNG_YANG.put("혈중 중성지방", List.of("오메가3"));
-        YOUNG_YANG.put("혈행 개선 (순환)", List.of("오메가3", "달맞이꽃종자유"));
+        YOUNG_YANG.put("혈관 막힘", List.of("오메가3"));
+        YOUNG_YANG.put("손발이 차고 저림", List.of("오메가3", "달맞이꽃종자유"));
         YOUNG_YANG.put("관절 통증", List.of("MSM"));
         YOUNG_YANG.put("뼈 건강 (골다공증)", List.of("비타민 D", "칼슘", "마그네슘"));
         YOUNG_YANG.put("근육 떨림/경련", List.of("마그네슘"));
         YOUNG_YANG.put("빈혈/어지러움", List.of("철분", "엽산"));
-        YOUNG_YANG.put("면역력 저하", List.of("아연", "비타민 C", "비타민 D", "유산균"));
-        YOUNG_YANG.put("월경 전 증후군", List.of("달맞이꽃종자유"));
+        YOUNG_YANG.put("면역력 저하 (잦은 잔병)", List.of("아연", "비타민 C", "비타민 D", "유산균"));
+        YOUNG_YANG.put("월경(생리) 전 증후군", List.of("달맞이꽃종자유"));
 
         // ==========================================
         // 2. 상세 설명
