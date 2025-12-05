@@ -1,39 +1,34 @@
 package com.nutrient_reminder.controller;
 
+import com.nutrient_reminder.model.Nutrient;
+import com.nutrient_reminder.service.AlarmSchedulerService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert; // Alert 추가
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label; // Label 추가
-import javafx.scene.control.ToggleButton;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional; // Optional 추가
+import java.util.Optional;
 
 public class AlarmAddPopupController {
 
-    // 새로운 알람 정보를 메인 컨트롤러로 전달하기 위한 인터페이스 정의
+    // 리스너 인터페이스 변경: 수정할 ID(idToUpdate)를 함께 전달
     public interface AlarmSaveListener {
-        // name: 약 이름, days: 선택된 요일 목록, time: "오전 09 : 30" 형식의 시간
-        void onAlarmSaved(String name, List<String> days, String time);
+        void onAlarmSaved(String name, List<String> days, String time, String idToUpdate);
     }
 
     private AlarmSaveListener listener;
+    private String idToUpdate = null; // 수정 모드일 경우 ID 저장 변수
 
-    // 외부에서 MainController를 리스너로 설정할 수 있는 Setter 메서드
-    public void setAlarmSaveListener(AlarmSaveListener listener) {
-        this.listener = listener;
-    }
+    // 서비스 인스턴스 (충돌 체크용)
+    private final AlarmSchedulerService service = AlarmSchedulerService.getInstance();
 
-    // FXML 필드
     @FXML private Label ampmLabel;
     @FXML private TextField hourField;
     @FXML private TextField minuteField;
-
     @FXML private TextField nameField;
     @FXML private Button saveButton;
 
@@ -50,33 +45,116 @@ public class AlarmAddPopupController {
     public void initialize() {
         LocalTime now = LocalTime.now();
 
-        // 12시간제로 변환: 0시는 12시로, 13시 이후는 (시간 % 12)로 변환
+        // 12시간제로 변환
         int currentHour12 = now.getHour() % 12;
         if (currentHour12 == 0) currentHour12 = 12;
 
-        // AM/PM 초기 설정
         ampmLabel.setText(now.getHour() < 12 ? "오전" : "오후");
-
-        // 시간 필드 초기 설정 (두 자리 포맷)
         hourField.setText(String.format("%02d", currentHour12));
         minuteField.setText(String.format("%02d", now.getMinute()));
 
-        // 시간 필드에 숫자만 입력되도록 제한 및 범위 제한 로직 추가
-        restrictToNumbers(hourField, 1, 12); // 12시간제 (1-12)
+        restrictToNumbers(hourField, 1, 12);
         restrictToNumbers(minuteField, 0, 59);
-    }
 
-    // AM/PM 토글 핸들러 (FXML에서 직접 연결)
-    @FXML
-    private void toggleAmPm(MouseEvent event) {
-        if ("오전".equals(ampmLabel.getText())) {
-            ampmLabel.setText("오후");
-        } else {
-            ampmLabel.setText("오전");
+        // 저장 버튼에 마우스 동적 효과 연결
+        if (saveButton != null) {
+            saveButton.setOnMouseEntered(this::onButtonHoverEnter);
+            saveButton.setOnMouseExited(this::onButtonHoverExit);
+            saveButton.setOnMousePressed(this::onButtonPress);
+            saveButton.setOnMouseReleased(this::onButtonRelease);
         }
     }
 
-    // 숫자 및 범위 제한 로직 (기존 코드 유지)
+    // 기능 추가 수정 모드일 때 기존 데이터를 팝업에 채워 넣는 메서드
+    public void setEditData(Nutrient nutrient) {
+        this.idToUpdate = nutrient.getId(); // 수정할 ID 저장
+        this.nameField.setText(nutrient.getName());
+
+        // 시간 파싱 (예: "오전 09 : 30") -> 화면에 분리해서 표시
+        String[] parts = nutrient.getTime().split("[:\\s]+");
+        if (parts.length >= 3) {
+            ampmLabel.setText(parts[0]);
+            hourField.setText(parts[1]);
+            minuteField.setText(parts[2]);
+        }
+
+        // 요일 버튼 상태 설정
+        List<String> days = nutrient.getDays();
+        sunToggle.setSelected(days.contains("일"));
+        monToggle.setSelected(days.contains("월"));
+        tueToggle.setSelected(days.contains("화"));
+        wedToggle.setSelected(days.contains("수"));
+        thuToggle.setSelected(days.contains("목"));
+        friToggle.setSelected(days.contains("금"));
+        satToggle.setSelected(days.contains("토"));
+
+        saveButton.setText("수정"); // 버튼 글자를 '수정'으로 변경
+    }
+
+    public void setAlarmSaveListener(AlarmSaveListener listener) {
+        this.listener = listener;
+    }
+
+    @FXML
+    private void handleSave() {
+        String name = nameField.getText().trim();
+        String hourStr = hourField.getText().trim();
+        String minuteStr = minuteField.getText().trim();
+        List<String> days = new ArrayList<>();
+
+        // 유효성 검사
+        if (name.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "입력 오류", "약 이름을 입력해 주세요.");
+            return;
+        }
+        if (hourStr.isEmpty() || minuteStr.isEmpty() || hourStr.length() > 2 || minuteStr.length() > 2) {
+            showAlert(Alert.AlertType.WARNING, "입력 오류", "시간을 정확히 입력해 주세요.");
+            return;
+        }
+
+        if (sunToggle.isSelected()) days.add("일");
+        if (monToggle.isSelected()) days.add("월");
+        if (tueToggle.isSelected()) days.add("화");
+        if (wedToggle.isSelected()) days.add("수");
+        if (thuToggle.isSelected()) days.add("목");
+        if (friToggle.isSelected()) days.add("금");
+        if (satToggle.isSelected()) days.add("토");
+
+        String ampm = ampmLabel.getText();
+        String time = String.format("%s %s : %s", ampm, hourStr, minuteStr);
+        /*
+        // ++ 성분 충돌 경고창 띄우기
+        // checkConflict 메서드 아직 없음
+        String conflictMsg = service.checkConflict(name, time);
+        if (conflictMsg != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("성분 충돌 경고");
+            alert.setHeaderText("함께 복용 시 주의가 필요한 성분입니다.");
+            alert.setContentText(conflictMsg + "\n\n그래도 저장하시겠습니까?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
+                return;
+            }
+        }*/
+
+        // 리스너 호출 (수정된 ID 전달)
+        if (listener != null) {
+            listener.onAlarmSaved(name, days, time, idToUpdate);
+        }
+
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        stage.close();
+    }
+
+    // --- 유틸리티 및 UI 이벤트 ---
+
+    @FXML
+    private void toggleAmPm(MouseEvent event) {
+        if ("오전".equals(ampmLabel.getText())) ampmLabel.setText("오후");
+        else ampmLabel.setText("오전");
+    }
+
     private void restrictToNumbers(TextField field, int minVal, int maxVal) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -86,21 +164,16 @@ public class AlarmAddPopupController {
             if (!field.getText().isEmpty()) {
                 try {
                     int value = Integer.parseInt(field.getText());
-                    // 입력 값이 범위를 벗어날 경우 수정
                     if (value < minVal) {
-                        // 0이 입력되었으나 minVal이 0보다 클 경우, minVal로 설정
                         if (minVal > 0 && value == 0) field.setText(String.format("%02d", minVal));
                     } else if (value > maxVal) {
                         field.setText(String.valueOf(maxVal));
                     }
-                } catch (NumberFormatException e) {
-                    // Do nothing
-                }
+                } catch (NumberFormatException e) { }
             }
         });
     }
 
-    // 공통 알림창 표시
     private void showAlert(Alert.AlertType type, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle("알림");
@@ -109,49 +182,23 @@ public class AlarmAddPopupController {
         alert.showAndWait();
     }
 
-
-    @FXML
-    private void handleSave() {
-        // 입력값 가져오기
-        String name = nameField.getText().trim();
-        String hourStr = hourField.getText().trim();
-        String minuteStr = minuteField.getText().trim();
-        List<String> days = new ArrayList<>();
-
-        // 1. 유효성 검사 (약 이름)
-        if (name.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "입력 오류", "약 이름을 입력해 주세요.");
-            return;
-        }
-
-        // 2. 유효성 검사 (시간)
-        if (hourStr.isEmpty() || minuteStr.isEmpty() || hourStr.length() > 2 || minuteStr.length() > 2) {
-            showAlert(Alert.AlertType.WARNING, "입력 오류", "시간을 정확히 입력해 주세요.");
-            return;
-        }
-
-        // 선택된 요일 리스트 만들기
-        if (sunToggle.isSelected()) days.add("일");
-        if (monToggle.isSelected()) days.add("월");
-        if (tueToggle.isSelected()) days.add("화");
-        if (wedToggle.isSelected()) days.add("수");
-        if (thuToggle.isSelected()) days.add("목");
-        if (friToggle.isSelected()) days.add("금");
-        if (satToggle.isSelected()) days.add("토");
-
-        // Time 형식 ex) "오전 09 : 30"
-        String ampm = ampmLabel.getText();
-        String time = String.format("%s %s : %s", ampm, hourStr, minuteStr);
-
-        // 리스너를 통해 메인 컨트롤러에 정보를 전달
-        if (listener != null) {
-            listener.onAlarmSaved(name, days, time);
-        } else {
-            System.err.println("오류: AlarmSaveListener가 설정되지 않았습니다.");
-        }
-
-        // 팝업 닫기
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
+    // 버튼 마우스 이벤트 핸들러
+    @FXML private void onButtonHoverEnter(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #567889; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 20px;");
+        button.setScaleX(1.02); button.setScaleY(1.02);
+    }
+    @FXML private void onButtonHoverExit(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #D0E8F2; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 20px;");
+        button.setScaleX(1.0); button.setScaleY(1.0);
+    }
+    @FXML private void onButtonPress(MouseEvent event) {
+        Node node = (Node) event.getSource(); node.setScaleX(0.98); node.setScaleY(0.98);
+    }
+    @FXML private void onButtonRelease(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #D0E8F2; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 20px;");
+        button.setScaleX(1.0); button.setScaleY(1.0);
     }
 }

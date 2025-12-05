@@ -4,17 +4,17 @@ import com.nutrient_reminder.model.Nutrient; // [중요] Nutrient 모델 사용
 import com.nutrient_reminder.service.AlarmSchedulerService;
 import com.nutrient_reminder.service.AlarmSchedulerService.AlarmStatusListener;
 import com.nutrient_reminder.service.UserSession;
-import javafx.application.Platform; // [복구] import 추가
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side; // Side import 추가
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*; // ContextMenu, MenuItem, Alert 등 추가
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional; // Optional import 추가
 
 public class MainController implements AlarmAddPopupController.AlarmSaveListener, AlarmStatusListener {
 
@@ -73,25 +74,33 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
             // 오늘 알람인지 확인 (필터링하지 않고 변수에 담음)
             boolean isToday = alarm.getDays().isEmpty() || alarm.getDays().contains(todayKorean);
 
-            // addAlarmToUI 호출 (isToday 플래그 추가)
-            addAlarmToUI(dateText, timeText, alarm.getName(), alarm.getTime(), alarm.getId(), alarm.getStatus(), isToday);
+            // addAlarmToUI 호출 (isToday 플래그 추가, alarmData 전달)
+            addAlarmToUI(dateText, timeText, alarm.getName(), alarm.getTime(), alarm.getId(), alarm.getStatus(), isToday, alarm);
         }
     }
 
     // AlarmAddPopupController.AlarmSaveListener 인터페이스 구현 (팝업 데이터 수신)
     @Override
-    public void onAlarmSaved(String name, List<String> days, String time) {
+    public void onAlarmSaved(String name, List<String> days, String time, String idToUpdate) {
         String userId = UserSession.getUserId();
 
-        // 서비스에 알람 등록 요청 (userId 포함)
-        service.registerAlarm(userId, name, time, days, null);
+        if (idToUpdate == null) {
+            // 새 알람 등록 요청 (userId 포함)
+            service.registerAlarm(userId, name, time, days, null);
+        } else {
+            // 💡 [수정] 기존 알람 수정 요청
+            // Nutrient 객체를 새로 생성하여 업데이트 (ID 유지)
+            Nutrient updatedAlarm = new Nutrient(idToUpdate, userId, name, time, days, "ACTIVE");
+            service.updateAlarm(updatedAlarm);
+        }
 
         // 화면 갱신
         loadAlarms();
     }
 
     // 알림박스 메소드 (깔끔한 디자인 및 두 개의 버튼, ID 추가)
-    public void addAlarmToUI(String dateText, String timeText, String pillName, String subTime, String alarmId, String status, boolean isToday) {
+    // 💡 [수정] Nutrient 객체 자체를 마지막 인자로 받음 (수정 시 데이터 전달용)
+    public void addAlarmToUI(String dateText, String timeText, String pillName, String subTime, String alarmId, String status, boolean isToday, Nutrient alarmData) {
 
         // 💡 디자인 개선: 흰색 배경, 부드러운 회색 테두리 그림자 추가
         VBox alarmBox = new VBox();
@@ -123,9 +132,27 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         Label pillLabel = new Label(pillName);
         pillLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
-        // 💡 옵션 버튼 ( ... ) 추가
+        // 💡 [수정] 옵션 버튼 ( ... ) 추가 및 ContextMenu 연결
         Button optionButton = new Button("···");
         optionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #888888; -fx-font-size: 24px; -fx-cursor: hand;");
+
+        // ContextMenu 생성
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem editItem = new MenuItem("수정");
+        MenuItem deleteItem = new MenuItem("삭제");
+
+        // 수정 기능 연결
+        editItem.setOnAction(e -> openEditPopup(alarmData));
+
+        // 삭제 기능 연결
+        deleteItem.setOnAction(e -> showDeleteConfirmation(alarmId));
+
+        contextMenu.getItems().addAll(editItem, deleteItem);
+
+        // 버튼 클릭 시 메뉴 보이기
+        optionButton.setOnAction(e -> {
+            contextMenu.show(optionButton, Side.BOTTOM, 0, 0);
+        });
 
         // 약 이름과 옵션 버튼 사이에 공간을 채우기 위해 Pane 추가
         Pane spacer = new Pane();
@@ -148,6 +175,8 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         eatenButton.setStyle(btnStyle);
         eatenButton.setOnAction(this::handleAlarmAction);
 
+        setupButtonEvents(eatenButton); // 마우스 이벤트 연결
+
         Button snoozeButton = new Button("30분 뒤 다시 울림");
         snoozeButton.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(snoozeButton, Priority.ALWAYS);
@@ -155,11 +184,51 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         snoozeButton.setStyle(btnStyle);
         snoozeButton.setOnAction(this::handleAlarmAction);
 
+        setupButtonEvents(snoozeButton); // 마우스 이벤트 연결
+
         buttonBar.getChildren().addAll(eatenButton, snoozeButton);
         alarmBox.getChildren().addAll(dateLabel, contentBox, buttonBar);
 
         if (alarmListContainer != null) {
             alarmListContainer.getChildren().add(alarmBox);
+        }
+    }
+
+    // 삭제 확인 팝업 메서드
+    private void showDeleteConfirmation(String alarmId) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("알람 삭제");
+        alert.setHeaderText(null);
+        alert.setContentText("정말 이 알람을 삭제하시겠습니까?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.deleteAlarm(alarmId); // 서비스에 삭제 요청
+        }
+    }
+
+    // 💡 [추가] 수정 팝업 열기 메서드
+    private void openEditPopup(Nutrient alarmData) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/nutrient_reminder/view/alarmAddPopup.fxml"));
+            Parent root = loader.load();
+
+            AlarmAddPopupController popupController = loader.getController();
+            popupController.setAlarmSaveListener(this);
+
+            // 기존 데이터 채워넣기
+            popupController.setEditData(alarmData);
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.WINDOW_MODAL);
+            popupStage.initOwner(userNameLabel.getScene().getWindow());
+            popupStage.setTitle("알람 수정");
+            popupStage.setScene(new Scene(root));
+            popupStage.setResizable(false);
+            popupStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -184,15 +253,21 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
 
     @Override
     public void onAlarmStatusChanged(String alarmId, String newStatus) {
-        for (Node node : alarmListContainer.getChildren()) {
-            if (node instanceof VBox) {
-                VBox alarmBox = (VBox) node;
-                if (alarmId.equals(alarmBox.getId())) {
-                    if ("COMPLETED".equals(newStatus)) {
-                        // [변경] 삭제하지 않고 흐리게 처리
-                        alarmBox.setOpacity(0.5);
-                        alarmBox.setDisable(true);
-                        return;
+        // 💡 [수정] 삭제되거나 수정되면 목록 전체 갱신
+        if ("DELETED".equals(newStatus) || "UPDATED".equals(newStatus)) {
+            loadAlarms();
+        } else {
+            // 기존 상태 변경(완료/스누즈) 처리
+            for (Node node : alarmListContainer.getChildren()) {
+                if (node instanceof VBox) {
+                    VBox alarmBox = (VBox) node;
+                    if (alarmId.equals(alarmBox.getId())) {
+                        if ("COMPLETED".equals(newStatus)) {
+                            // [변경] 삭제하지 않고 흐리게 처리
+                            alarmBox.setOpacity(0.5);
+                            alarmBox.setDisable(true);
+                            return;
+                        }
                     }
                 }
             }
@@ -257,5 +332,45 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
     private void onHoverExit(MouseEvent event) {
         Node node = (Node) event.getSource();
         node.setScaleX(1.0); node.setScaleY(1.0);
+    }
+
+    // 버튼 이벤트 연결용 헬퍼 메서드
+    private void setupButtonEvents(Button btn) {
+        btn.setOnMouseEntered(this::onAlarmButtonHoverEnter);
+        btn.setOnMouseExited(this::onAlarmButtonHoverExit);
+        btn.setOnMousePressed(this::onAlarmButtonPress);
+        btn.setOnMouseReleased(this::onAlarmButtonRelease);
+    }
+
+    // 알람 버튼 마우스 이벤트 (기존 유지)
+    @FXML
+    private void onAlarmButtonHoverEnter(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #567889; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;");
+        button.setScaleX(1.02);
+        button.setScaleY(1.02);
+    }
+
+    @FXML
+    private void onAlarmButtonHoverExit(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #E8F5FF; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;");
+        button.setScaleX(1.0);
+        button.setScaleY(1.0);
+    }
+
+    @FXML
+    private void onAlarmButtonPress(MouseEvent event) {
+        Node node = (Node) event.getSource();
+        node.setScaleX(0.98);
+        node.setScaleY(0.98);
+    }
+
+    @FXML
+    private void onAlarmButtonRelease(MouseEvent event) {
+        Button button = (Button) event.getSource();
+        button.setStyle("-fx-background-color: #E8F5FF; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;");
+        button.setScaleX(1.0);
+        button.setScaleY(1.0);
     }
 }

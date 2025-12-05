@@ -21,15 +21,24 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map; // Map import 추가
+import java.util.HashMap; // HashMap import 추가
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors; // Collectors import 추가
 
 public class AlarmSchedulerService {
 
     private static final String ALARM_FILE = "alarms_data.json";
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    // 1. 성분 충돌 데이터베이스
+    private static final Map<String, List<String>> CONFLICT_MAP = new HashMap<>();
+    static {
+
+    }
 
     // 인터페이스를 AlarmSchedulerService 클래스의 내부 (static public)로 정의
     public interface AlarmStatusListener {
@@ -64,6 +73,53 @@ public class AlarmSchedulerService {
         }
         return instance;
     }
+
+    // 1. 충돌 감지 메서드 구현
+    public String checkConflict(String newName, String newTime) {
+        String conflictKey = null;
+        for (String key : CONFLICT_MAP.keySet()) {
+            if (newName.contains(key)) {
+                conflictKey = key;
+                break;
+            }
+        }
+
+        if (conflictKey == null) return null;
+
+        List<String> badCombinations = CONFLICT_MAP.get(conflictKey);
+
+        for (Nutrient alarm : scheduledAlarms) {
+            if (alarm.getTime().equals(newTime) && "ACTIVE".equals(alarm.getStatus())) {
+                for (String bad : badCombinations) {
+                    if (alarm.getName().contains(bad)) {
+                        return String.format("주의: '%s'과(와) '%s'은(는) 함께 복용 시 흡수율이 떨어지거나 부작용이 있을 수 있습니다.", newName, alarm.getName());
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // 2 알람 수정 메서드 구현
+    public void updateAlarm(Nutrient updatedNutrient) {
+        for (int i = 0; i < scheduledAlarms.size(); i++) {
+            if (scheduledAlarms.get(i).getId().equals(updatedNutrient.getId())) {
+                scheduledAlarms.set(i, updatedNutrient);
+                break;
+            }
+        }
+        saveAlarmsToFile();
+        notifyListeners(updatedNutrient.getId(), "UPDATED");
+    }
+
+    // 3 알람 삭제 메서드 구현
+    public void deleteAlarm(String alarmId) {
+
+        scheduledAlarms.removeIf(alarm -> alarm.getId().equals(alarmId));
+        saveAlarmsToFile();
+        notifyListeners(alarmId, "DELETED");
+    }
+
 
     // --- 스케줄러 로직 ---
     private void startScheduler() {
@@ -139,18 +195,23 @@ public class AlarmSchedulerService {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // 리스너 등록 메서드 (MainController가 자신을 등록함)
+    private void notifyListeners(String alarmId, String status) {
+        Platform.runLater(() -> {
+            for (AlarmStatusListener listener : listeners) {
+                listener.onAlarmStatusChanged(alarmId, status);
+            }
+        });
+    }
+
     public void addListener(AlarmStatusListener listener) {
         listeners.add(listener);
         System.out.println("MainController가 AlarmSchedulerService에 등록되었습니다.");
     }
 
-    // 알람 목록을 MainController에게 제공하는 메서드
     public List<Nutrient> getScheduledAlarms() {
         return scheduledAlarms;
     }
 
-    // MainController의 onAlarmSaved에서 호출될 알람 등록 메서드
     public Nutrient registerAlarm(String userId, String name, String time, List<String> days, String alarmId) {
         if (alarmId == null) alarmId = "alarm_" + System.currentTimeMillis();
 
@@ -158,28 +219,25 @@ public class AlarmSchedulerService {
         scheduledAlarms.add(newAlarm);
 
         saveAlarmsToFile();
-        System.out.println("서비스: 알람 저장 완료 - " + name);
         return newAlarm;
     }
 
-    // 알람 상태 변경 요청 처리 (AlarmTriggerController에서 호출됨)
     public void updateAlarmStatus(String alarmId, String status) {
         for (Nutrient alarm : scheduledAlarms) {
             if (alarm.getId().equals(alarmId)) {
                 if ("COMPLETED".equals(status)) {
                     alarm.setStatus("COMPLETED");
                     alarm.setLastTakenDate(LocalDate.now().toString());
+                } else if ("SNOOZED".equals(status)) {
+                    // 스누즈 로직은 여기에 시간 재계산 로직이 들어가야 합니다. (현재는 ACTIVE로만 변경)
+                    alarm.setStatus("ACTIVE");
+                } else {
+                    alarm.setStatus(status);
                 }
             }
         }
         saveAlarmsToFile();
-
-        // 모든 리스너(MainController)에게 변경 사실 통보
-        Platform.runLater(() -> {
-            for (AlarmStatusListener listener : listeners) {
-                listener.onAlarmStatusChanged(alarmId, status);
-            }
-        });
+        notifyListeners(alarmId, status);
     }
 
     private void saveAlarmsToFile() {
