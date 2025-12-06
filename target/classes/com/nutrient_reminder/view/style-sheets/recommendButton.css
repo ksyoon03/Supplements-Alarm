@@ -1,0 +1,27 @@
+/* =========================================================
+ * 영양제 추천 버튼 스타일 시트
+ * - 기본 상태, 마우스 오버(Hover), 클릭(Pressed) 상태 정의
+ * ========================================================= */
+
+/* 1. 버튼 기본 모양 정의 */
+.recommend-btn {
+    -fx-background-color: #32baf8;  /* 시원한 하늘색 배경 */
+    -fx-text-fill: white;           /* 글자색 흰색 */
+    -fx-font-size: 16px;            /* 글자 크기 */
+    -fx-font-weight: bold;          /* 글자 굵게 */
+    -fx-background-radius: 20;      /* 둥근 모서리 (알약 느낌) */
+    -fx-pref-height: 45;            /* 버튼 높이 고정 */
+    -fx-cursor: hand;               /* 마우스 올리면 손가락 모양 커서 */
+}
+
+/* 2. 마우스를 버튼 위에 올렸을 때 (Hover) */
+.recommend-btn:hover {
+    -fx-background-color: #567889;  /* 약간 톤 다운된 색상으로 변경하여 반응감 부여 */
+}
+
+/* 3. 마우스로 버튼을 꾹 눌렀을 때 (Pressed) */
+.recommend-btn:pressed {
+    -fx-background-color: #3e5661;  /* 더 어두운 색상으로 눌린 느낌 강조 */
+    /* 안쪽 그림자(Inner Shadow)를 주어 버튼이 안으로 들어가는 입체감 표현 */
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);
+}

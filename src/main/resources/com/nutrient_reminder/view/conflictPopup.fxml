@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefWidth="380.0" spacing="15.0" styleClass="root-box"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.nutrient_reminder.controller.ConflictPopupController">
+
+    <stylesheets>
+        <URL value="@style-sheets/conflictPopup.css" />
+        <URL value="@style-sheets/font.css" />
+    </stylesheets>
+
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+    </padding>
+
+    <HBox alignment="CENTER" spacing="10.0">
+        <Label styleClass="header-title" text="성분 충돌 경고" />
+    </HBox>
+
+    <Separator prefWidth="200.0" style="-fx-opacity: 0.5;" />
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" styleClass="content-box">
+        <Label styleClass="sub-title-warning" text="주의사항" />
+        <Label fx:id="warningLabel" styleClass="content-text"
+               text="종합비타민과 철분제는 서로 흡수를 강력하게 방해합니다."
+               wrapText="true" maxWidth="330.0"/>
+    </VBox>
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" styleClass="content-box">
+        <Label styleClass="sub-title-suggestion" text="섭취 제안" />
+        <Label fx:id="suggestionLabel" styleClass="content-text"
+               text="동시 섭취를 피하고 아침/저녁으로 나눠 드세요."
+               wrapText="true" maxWidth="330.0"/>
+    </VBox>
+
+    <VBox prefHeight="10.0" />
+
+    <Label styleClass="question-label" text="그래도 저장하시겠습니까?" />
+
+    <HBox alignment="CENTER" spacing="15.0">
+        <Button fx:id="cancelButton" onAction="#handleCancel"
+                styleClass="action-button, cancel-button" text="취소" />
+
+        <Button fx:id="confirmButton" onAction="#handleConfirm"
+                styleClass="action-button, confirm-button" text="저장" />
+    </HBox>
+
+</VBox>

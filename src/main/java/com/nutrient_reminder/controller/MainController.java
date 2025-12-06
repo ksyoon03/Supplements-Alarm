@@ -218,13 +218,13 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
     @Override
     public void onAlarmStatusChanged(String alarmId, String newStatus) { loadAlarms(); }
 
-    @FXML private void handleLogout() {
-        try {
-            UserSession.clear();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/nutrient_reminder/view/login-view.fxml"));
-            Stage stage = (Stage) userNameLabel.getScene().getWindow();
-            stage.getScene().setRoot(root);
-        } catch (IOException e) { e.printStackTrace(); }
+    @FXML
+    private void handleLogout() {
+        // 현재 화면의 Stage 정보를 가져옴
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+
+        // 헬퍼 클래스에게 로그아웃 처리를 위임
+        LogoutPopupController.handleLogout(stage);
     }
 
     @FXML private void handleRecommendTab() {

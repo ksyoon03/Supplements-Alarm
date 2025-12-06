@@ -1,0 +1,92 @@
+/* =========================================================
+ * 영양 성분 상세 정보 팝업 스타일 시트
+ * - 팝업 내 글자 크기, 색상, 레이아웃 정의
+ * ========================================================= */
+
+/* 1. 팝업 전체 배경 및 패딩 */
+.popup-root {
+    -fx-background-color: white;
+    -fx-padding: 28;
+}
+
+/* 2. 최상단 제목 (예: 비타민 C) */
+.title-label {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #32baf8; /* 메인 테마 색상(하늘색) */
+}
+
+/* 3. 경고 문구 (전문가와 상담하세요) */
+.warning-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: red; /* 강조를 위한 빨간색 */
+}
+
+/* 4. 메인 섹션 제목 (상세설명, 섭취시간 등) */
+.section-header {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* 5. 섹션 본문 내용 텍스트 */
+.section-body {
+    -fx-font-size: 16px;
+    -fx-text-fill: #555555;
+    -fx-padding: 5 0 0 5;
+}
+
+/* 6. (사용 안 함) 하위 섹션 구분용 왼쪽 테두리 */
+.sub-section-box {
+    -fx-border-color: transparent transparent transparent #E0E0E0;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 10 0 0 15;
+}
+
+/* 7. 하위 섹션 헤더 스타일 */
+.sub-section-header {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* 8. 하위 섹션 본문 스타일 */
+.sub-section-body {
+    -fx-font-size: 16px;
+    -fx-text-fill: #666666;
+    -fx-padding: 3 0 10 5;
+}
+
+/* 9. 스크롤 패널 배경 투명화 (내용물 배경색을 따르도록) */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* 10. 하단 '닫기' 버튼 스타일 */
+.close-btn {
+    -fx-font-size: 16px;
+    -fx-background-color: #555555;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 12 35 12 35; /* 버튼 크기 확보 */
+    -fx-background-radius: 5;
+}
+.close-btn:hover {
+    -fx-background-color: #333333; /* 마우스 오버 시 진해짐 */
+}
+
+/* 11. '같이 먹으면 좋은 성분' 제목 색상 */
+.good-header {
+    -fx-text-fill: #27ae60; /* 긍정적인 초록색 */
+}
+
+/* 12. '같이 먹으면 안 좋은 성분' 제목 색상 */
+.bad-header {
+    -fx-text-fill: #e74c3c; /* 부정적인 빨간색 */
+}

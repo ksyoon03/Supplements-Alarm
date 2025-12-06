@@ -28,7 +28,7 @@
                    style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-border-color: #BDBDBD; -fx-border-width: 0 0 2 0; -fx-text-fill: #333333;" />
     </HBox>
 
-    <TextField fx:id="nameField" promptText="약 이름"
+    <TextField fx:id="nameField" promptText="영양제 이름"
                style="-fx-background-color: white; -fx-border-color: #BDBDBD; -fx-border-radius: 20; -fx-background-radius: 20; -fx-font-size: 16px; -fx-pref-height: 40; -fx-padding: 0 15; -fx-text-fill: #333333;" />
 
     <HBox alignment="CENTER_LEFT" prefWidth="250.0">

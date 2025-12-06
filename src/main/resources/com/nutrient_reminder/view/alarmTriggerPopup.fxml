@@ -24,7 +24,7 @@
 
         <Pane HBox.hgrow="ALWAYS" />
 
-        <Label fx:id="pillNameLabel" text="약 이름" textFill="#555555"
+        <Label fx:id="pillNameLabel" text="영양제 이름" textFill="#555555"
                style="-fx-font-weight: bold; -fx-font-size: 24.0px;" />
     </HBox>
 
