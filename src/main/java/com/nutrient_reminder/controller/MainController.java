@@ -90,26 +90,18 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         VBox alarmBox = new VBox();
         alarmBox.setId(alarmId);
 
-        // 1. 배경 스타일 동적 적용
-        String boxStyle = "-fx-background-radius: 15; -fx-border-width: 1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0.0, 0, 2);";
-
-        if (!isToday) {
-            // 오늘 아님: 연한 회색
-            boxStyle += "-fx-background-color: #FAFAFA; -fx-border-color: #EEEEEE;";
-        } else if ("COMPLETED".equals(status)) {
-            // 완료됨: 연한 초록색
-            boxStyle += "-fx-background-color: #F1F8E9; -fx-border-color: #C5E1A5;";
-        } else if ("SNOOZED".equals(status)) {
-            // 스누즈됨: 연한 노란색
-            boxStyle += "-fx-background-color: #FFFDE7; -fx-border-color: #FFF59D;";
-        } else {
-            // 기본: 흰색
-            boxStyle += "-fx-background-color: white; -fx-border-color: #DDDDDD;";
-        }
-
+        // 1. 배경 스타일
+        String boxStyle = "-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #DDDDDD; -fx-border-width: 1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.0, 0, 3);";
         alarmBox.setStyle(boxStyle);
         alarmBox.setPadding(new Insets(15, 20, 15, 20));
         alarmBox.setSpacing(10);
+
+        // 2. 상태 표시
+        boolean isCompleted = "COMPLETED".equals(status);
+        // 오늘 약이 아니거나 이미 먹었으면 흐리게 처리
+        if (!isToday || isCompleted) {
+            alarmBox.setOpacity(0.5);
+        }
 
         Label dateLabel = new Label(dateText);
         dateLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #999999; -fx-font-size: 14px;");
@@ -124,85 +116,70 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         Label pillLabel = new Label(pillName);
         pillLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
+        // 3. 옵션 버튼 (...) - 항상 활성화 (수정/삭제 가능)
         Button optionButton = new Button("···");
         optionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #888888; -fx-font-size: 24px; -fx-cursor: hand;");
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem editItem = new MenuItem("수정");
         MenuItem deleteItem = new MenuItem("삭제");
+
         editItem.setOnAction(e -> openEditPopup(alarmData));
         deleteItem.setOnAction(e -> showDeleteConfirmation(alarmId));
+
         contextMenu.getItems().addAll(editItem, deleteItem);
-        optionButton.setOnAction(e -> contextMenu.show(optionButton, Side.BOTTOM, 0, 0));
+
+        optionButton.setOnAction(e -> {
+            contextMenu.show(optionButton, Side.BOTTOM, 0, 0);
+        });
 
         Pane spacer = new Pane();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
         contentBox.getChildren().addAll(mainTimeLabel, pillLabel, spacer, optionButton);
 
-
-        // 4. 하단 버튼 영역 (상태별 분기 처리)
+        // 4. 하단 버튼 영역
         HBox buttonBar = new HBox();
         buttonBar.setSpacing(10);
         buttonBar.setAlignment(Pos.CENTER);
 
-        if (isToday) {
-            if ("COMPLETED".equals(status)) {
-                // 완료 메시지
-                Label completedLabel = new Label("✅ 오늘 복용 완료");
-                completedLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #558B2F; -fx-padding: 8 0 8 0;");
-                completedLabel.setMaxWidth(Double.MAX_VALUE);
-                completedLabel.setAlignment(Pos.CENTER);
-                HBox.setHgrow(completedLabel, Priority.ALWAYS);
-                buttonBar.getChildren().add(completedLabel);
-            } else {
-                // 활성 또는 스누즈 상태
-                String btnStyle = "-fx-background-color: #E8F5FF; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;";
+        String btnStyle = "-fx-background-color: #E8F5FF; -fx-background-radius: 10; -fx-text-fill: #567889; -fx-font-weight: bold; -fx-cursor: hand; -fx-font-size: 14px;";
 
-                // 먹기 버튼
-                Button eatenButton = new Button("먹었습니다");
-                eatenButton.setMaxWidth(Double.MAX_VALUE);
-                HBox.setHgrow(eatenButton, Priority.ALWAYS);
-                eatenButton.setUserData(alarmId);
-                eatenButton.setStyle(btnStyle);
-                eatenButton.setOnAction(this::handleAlarmAction);
-                setupButtonEvents(eatenButton);
+        // 버튼 활성화 여부 결정
+        boolean disableButtons = !isToday || isCompleted;
 
-                // 스누즈 버튼
-                Button snoozeButton = new Button("30분 뒤 다시 울림");
-                snoozeButton.setMaxWidth(Double.MAX_VALUE);
-                HBox.setHgrow(snoozeButton, Priority.ALWAYS);
-                snoozeButton.setUserData(alarmId);
+        Button eatenButton = new Button("먹었습니다");
+        eatenButton.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(eatenButton, Priority.ALWAYS);
+        eatenButton.setUserData(alarmId);
+        eatenButton.setStyle(btnStyle);
+        eatenButton.setDisable(disableButtons); // 상태에 따라 비활성화
+        eatenButton.setOnAction(this::handleAlarmAction);
+        setupButtonEvents(eatenButton);
 
-                // 스누즈 상태라면 버튼 모양 바꾸기
-                if ("SNOOZED".equals(status)) {
-                    snoozeButton.setText("💤 30분 대기 중");
-                    snoozeButton.setStyle("-fx-background-color: #FFF59D; -fx-background-radius: 10; -fx-text-fill: #F57F17; -fx-font-weight: bold; -fx-font-size: 14px;");
-                    snoozeButton.setDisable(true); // 중복 클릭 방지
-                } else {
-                    snoozeButton.setStyle(btnStyle);
-                    setupButtonEvents(snoozeButton);
-                    snoozeButton.setOnAction(this::handleAlarmAction);
-                }
+        Button snoozeButton = new Button("30분 뒤 다시 울림");
+        snoozeButton.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(snoozeButton, Priority.ALWAYS);
+        snoozeButton.setUserData(alarmId);
 
-                buttonBar.getChildren().addAll(eatenButton, snoozeButton);
-            }
+        // 중복 클릭 방지
+        if ("SNOOZED".equals(status)) {
+            snoozeButton.setDisable(true);
         } else {
-            // 오늘 아님 메시지
-            Label notTodayLabel = new Label("오늘 복용하는 약이 아닙니다");
-            notTodayLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #9E9E9E; -fx-padding: 8 0 8 0;");
-            notTodayLabel.setMaxWidth(Double.MAX_VALUE);
-            notTodayLabel.setAlignment(Pos.CENTER);
-            HBox.setHgrow(notTodayLabel, Priority.ALWAYS);
-            buttonBar.getChildren().add(notTodayLabel);
+            snoozeButton.setDisable(disableButtons);
         }
 
+        snoozeButton.setStyle(btnStyle);
+        snoozeButton.setOnAction(this::handleAlarmAction);
+        setupButtonEvents(snoozeButton);
+
+        buttonBar.getChildren().addAll(eatenButton, snoozeButton);
         alarmBox.getChildren().addAll(dateLabel, contentBox, buttonBar);
 
         if (alarmListContainer != null) {
             alarmListContainer.getChildren().add(alarmBox);
         }
     }
-
     private void showDeleteConfirmation(String alarmId) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("알람 삭제");

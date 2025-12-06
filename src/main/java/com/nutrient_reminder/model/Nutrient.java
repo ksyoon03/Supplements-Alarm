@@ -7,6 +7,7 @@ public class Nutrient {
     private String userId;        // [추가] 사용자 구분용
     private String name;
     private String time;
+    private String originalTime;
     private List<String> days;
     private String status;
     private String lastTakenDate; // [추가] 자정 초기화 로직용 (YYYY-MM-DD)
@@ -14,12 +15,13 @@ public class Nutrient {
     // Gson은 기본 생성자가 없어도 되지만, 명시적으로 두는 것이 안전합니다.
     public Nutrient() {}
 
-    // 생성자 (userId 추가됨)
+    // 생성자 (userId 추가됨) (originalTime 추가 : 30분을 미루어도 자정이 지나면 원래 저장한 시간으로 초기화)
     public Nutrient(String id, String userId, String name, String time, List<String> days, String status) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.time = time;
+        this.originalTime = time;
         this.days = days;
         this.status = status;
         this.lastTakenDate = "";
@@ -37,6 +39,9 @@ public class Nutrient {
 
     public String getTime() { return time; }
     public void setTime(String time) { this.time = time; }
+
+    public String getOriginalTime() { return originalTime; }
+    public void setOriginalTime(String originalTime) { this.originalTime = originalTime; }
 
     public List<String> getDays() { return days; }
     public void setDays(List<String> days) { this.days = days; }
