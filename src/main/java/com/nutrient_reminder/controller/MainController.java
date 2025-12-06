@@ -84,7 +84,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         loadAlarms();
     }
 
-    // [디자인 개선] 알림박스 메소드
+    // 알림박스 메소드
     public void addAlarmToUI(String dateText, String timeText, String pillName, String subTime, String alarmId, String status, boolean isToday, Nutrient alarmData) {
 
         VBox alarmBox = new VBox();
@@ -100,7 +100,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
             // 완료됨: 연한 초록색
             boxStyle += "-fx-background-color: #F1F8E9; -fx-border-color: #C5E1A5;";
         } else if ("SNOOZED".equals(status)) {
-            // [추가] 스누즈됨: 연한 노란색 (눈에 띄게!)
+            // 스누즈됨: 연한 노란색
             boxStyle += "-fx-background-color: #FFFDE7; -fx-border-color: #FFF59D;";
         } else {
             // 기본: 흰색
@@ -111,7 +111,6 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         alarmBox.setPadding(new Insets(15, 20, 15, 20));
         alarmBox.setSpacing(10);
 
-        // ... (라벨, 옵션 버튼 생성 코드 동일 - 생략 가능하지만 전체 복붙 추천) ...
         Label dateLabel = new Label(dateText);
         dateLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #999999; -fx-font-size: 14px;");
 
@@ -174,7 +173,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
                 HBox.setHgrow(snoozeButton, Priority.ALWAYS);
                 snoozeButton.setUserData(alarmId);
 
-                // [핵심] 스누즈 상태라면 버튼 모양 바꾸기
+                // 스누즈 상태라면 버튼 모양 바꾸기
                 if ("SNOOZED".equals(status)) {
                     snoozeButton.setText("💤 30분 대기 중");
                     snoozeButton.setStyle("-fx-background-color: #FFF59D; -fx-background-radius: 10; -fx-text-fill: #F57F17; -fx-font-weight: bold; -fx-font-size: 14px;");
@@ -255,7 +254,7 @@ public class MainController implements AlarmAddPopupController.AlarmSaveListener
         loadAlarms();
     }
 
-    // --- 기타 메뉴 및 이벤트 핸들러 (기존 유지) ---
+    // --- 기타 메뉴 및 이벤트 핸들러 ---
     @FXML private void handleLogout() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("로그아웃 확인");
