@@ -123,6 +123,30 @@ public class AlarmAddPopupController {
         String ampm = ampmLabel.getText();
         String time = String.format("%s %s : %s", ampm, hourStr, minuteStr);
 
+        // 충돌 감지 로직
+        // 1. 서비스에 충돌 여부를 물어봄
+        String conflictMsg = service.checkConflict(name, time);
+
+        // 2. 충돌 메시지가 돌아오면(null이 아니면) 경고 팝업 띄움
+        if (conflictMsg != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("⚠️ 성분 충돌 경고");
+            alert.setHeaderText("함께 복용 시 주의가 필요해요!");
+            alert.setContentText(conflictMsg + "\n\n그래도 저장하시겠습니까?");
+
+            // 버튼 커스텀 (예/아니요)
+            ButtonType yesButton = new ButtonType("예 (저장)");
+            ButtonType noButton = new ButtonType("아니요 (취소)", ButtonBar.ButtonData.CANCEL_CLOSE);
+            alert.getButtonTypes().setAll(yesButton, noButton);
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            // '아니요'를 누르거나 창을 닫으면 저장하지 않고 리턴
+            if (result.isEmpty() || result.get() != yesButton) {
+                return;
+            }
+        }
+
         // 리스너 호출 (수정된 ID 전달)
         if (listener != null) {
             listener.onAlarmSaved(name, days, time, idToUpdate);
