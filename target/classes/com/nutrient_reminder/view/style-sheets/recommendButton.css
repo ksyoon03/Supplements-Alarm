@@ -1,0 +1,21 @@
+/* 영양제 추천 버튼 기본 스타일 */
+.recommend-btn {
+    -fx-background-color: #567889;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-pref-height: 45;
+    -fx-cursor: hand;
+}
+
+/* 마우스를 올렸을 때 (Hover) : 약간 밝게 */
+.recommend-btn:hover {
+    -fx-background-color: #6a8ea1;
+}
+
+/* 마우스를 꾹 눌렀을 때 (Pressed) : 어둡게 + 그림자 효과 */
+.recommend-btn:pressed {
+    -fx-background-color: #3e5661;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2); /* 안쪽 그림자로 눌린 느낌 줌 */
+}

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 public class AlarmAddPopupController {
 
-    // 리스너 인터페이스 변경: 수정할 ID(idToUpdate)를 함께 전달
     public interface AlarmSaveListener {
         void onAlarmSaved(String name, List<String> days, String time, String idToUpdate);
     }
@@ -91,6 +90,7 @@ public class AlarmAddPopupController {
         saveButton.setText("수정"); // 버튼 글자를 '수정'으로 변경
     }
 
+
     public void setAlarmSaveListener(AlarmSaveListener listener) {
         this.listener = listener;
     }
@@ -122,21 +122,6 @@ public class AlarmAddPopupController {
 
         String ampm = ampmLabel.getText();
         String time = String.format("%s %s : %s", ampm, hourStr, minuteStr);
-        /*
-        // ++ 성분 충돌 경고창 띄우기
-        // checkConflict 메서드 아직 없음
-        String conflictMsg = service.checkConflict(name, time);
-        if (conflictMsg != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("성분 충돌 경고");
-            alert.setHeaderText("함께 복용 시 주의가 필요한 성분입니다.");
-            alert.setContentText(conflictMsg + "\n\n그래도 저장하시겠습니까?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isEmpty() || result.get() != ButtonType.OK) {
-                return;
-            }
-        }*/
 
         // 리스너 호출 (수정된 ID 전달)
         if (listener != null) {

@@ -1,0 +1,78 @@
+/* 🌟 전체 배경 */
+.root {
+    -fx-background-color: #ecf6fa;
+    -fx-font-family: 'Malgun Gothic', sans-serif; /* 폰트 설정 통합 */
+}
+
+/* ⬜ 컨테이너 */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 4); /* 은은한 그림자 */
+    -fx-padding: 40;
+}
+
+/* 제목*/
+.title-label {
+    -fx-text-fill: #546e7a;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+/* 텍스트 박스 */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-background-radius: 50;
+    -fx-border-color: #cfd8dc;
+    -fx-border-radius: 50;
+    -fx-border-width: 1.5;
+    -fx-padding: 12 20 12 20;
+    -fx-prompt-text-fill: #b0bec5;
+    -fx-font-size: 14px;
+}
+
+/* 입력 중 */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #81d4fa;
+    -fx-background-color: #fafafa;
+}
+
+/* 🔘버튼 */
+.button {
+    -fx-background-color: #a8dff5;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+    -fx-pref-height: 45;
+}
+
+.button:hover {
+    -fx-background-color: #81d4fa;
+}
+
+.button:pressed {
+    -fx-background-color: #4fc3f7;
+}
+
+/*회원가입 하시겠습니까? */
+.hyperlink {
+    -fx-text-fill: #90a4ae;
+    -fx-font-size: 12px;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #81d4fa;
+    -fx-underline: true;
+}
+
+/* 빨간 글씨 */
+.hint-label {
+    -fx-text-fill: #ff8a80;
+    -fx-font-size: 11px;
+    -fx-padding: 0 0 0 10;
+}

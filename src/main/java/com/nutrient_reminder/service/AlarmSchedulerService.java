@@ -228,16 +228,22 @@ public class AlarmSchedulerService {
                 if ("COMPLETED".equals(status)) {
                     alarm.setStatus("COMPLETED");
                     alarm.setLastTakenDate(LocalDate.now().toString());
-                } else if ("SNOOZED".equals(status)) {
-                    // 스누즈 로직은 여기에 시간 재계산 로직이 들어가야 합니다. (현재는 ACTIVE로만 변경)
-                    alarm.setStatus("ACTIVE");
-                } else {
-                    alarm.setStatus(status);
+                }
+                // [추가] 스누즈 상태도 저장해야 화면에 반영됨!
+                else if ("SNOOZED".equals(status)) {
+                    alarm.setStatus("SNOOZED");
+                    // (심화 기능: 실제 시간을 30분 뒤로 바꾸는 로직은 나중에 추가 가능)
                 }
             }
         }
-        saveAlarmsToFile();
-        notifyListeners(alarmId, status);
+        saveAlarmsToFile(); // 변경 사항 저장
+
+        // 모든 리스너(MainController)에게 변경 사실 통보
+        Platform.runLater(() -> {
+            for (AlarmStatusListener listener : listeners) {
+                listener.onAlarmStatusChanged(alarmId, status);
+            }
+        });
     }
 
     private void saveAlarmsToFile() {
