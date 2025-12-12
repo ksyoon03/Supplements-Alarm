@@ -143,7 +143,7 @@ public class NutrientCheckController {
                 Stage stage = (Stage) currentScene.getWindow();
                 stage.setTitle("로그인");
 
-                // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
+                // 화면 전환 후 최대화 다시 적용
                 stage.setMaximized(true);
 
             } catch (IOException e) {
@@ -188,7 +188,7 @@ public class NutrientCheckController {
             Stage stage = (Stage) currentScene.getWindow();
             stage.setTitle("영양제 알리미");
 
-            // ⭐수정: 화면 전환 후 최대화 다시 적용⭐
+            // 화면 전환 후 최대화 다시 적용
             stage.setMaximized(true);
 
         } catch (IOException e) {
@@ -196,4 +196,5 @@ public class NutrientCheckController {
             System.out.println("메인 화면으로 이동 실패: 경로를 확인해주세요.");
         }
     }
+
 }
