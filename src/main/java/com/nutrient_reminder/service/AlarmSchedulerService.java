@@ -50,7 +50,6 @@ public class AlarmSchedulerService {
     private LocalDate lastCheckDate = LocalDate.now();
 
     private AlarmSchedulerService() {
-        // 싱글톤 패턴
         // 파일에서 저장된 알람 불러오기
         loadAlarmsFromFile();
 
@@ -200,4 +199,5 @@ public class AlarmSchedulerService {
             }
         } catch (IOException e) { e.printStackTrace(); }
     }
+
 }
